@@ -21,7 +21,7 @@
 //#include "button.h"
 //#include "writing_demo.h"
 
-
+uint8_t buffer[800];
 
 void scrub(void) {
 	uint8_t color = PIXEL_ON;
