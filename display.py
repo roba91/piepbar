@@ -8,7 +8,7 @@ class DisplayConnection(object):
 	
 
 	def __init__(self, port, baudrate=115200):
-		self._ser = serial.Serial(port, baudrate, timeout=0.5)
+		self._ser = serial.Serial(port, baudrate, timeout=0.250)
 		self._crc16 = mkCrcFun('crc16')
 
 	def _build_packet(self, data):
@@ -17,7 +17,6 @@ class DisplayConnection(object):
 
 	def _send_half_image(self, data, half):
 		success = False
-		print data
 		paket = self._build_packet(data)
 		req = chr(0xD0 | half)
 		resp = chr(0xA0 | half)
@@ -36,3 +35,8 @@ class DisplayConnection(object):
 			success = (self._ser.read() == ack)
 
 		print "Data was acked"
+
+
+	def send_image(self, data):
+		self._send_half_image(data[:800],0)
+		self._send_half_image(data[800:],1)

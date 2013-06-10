@@ -63,7 +63,7 @@ int main(void) {
 					buffer[count] = data;
 					crc = _crc16_update(crc, data);
 					count++;
-					if(count >= 400) {
+					if(count >= 800) {
 						state = CRC;
 						count = 0;
 					}
@@ -84,10 +84,16 @@ int main(void) {
 							else {
 								uart_putc(0xAB);
 							}
+							for(count = 0; count <= 800; count++) {
+								if(half == UPPER) {
+									lcd_write_byte(count, buffer[count]);
+								}
+								else {
+									lcd_write_byte(count+800, buffer[count]);
+								}
+							}
 						}
-						for(count = 0; count <= 400; count++) {
-							lcd_write_byte(count, buffer[count]); 
-						}
+
 						state = IDLE;
 					}
 					break;
