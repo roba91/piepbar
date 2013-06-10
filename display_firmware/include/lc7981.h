@@ -4,7 +4,7 @@
  *  Created on: 01.05.2009
  *      Author: sebastian
  *
- * Version 0.7 beta
+ * Version 0.7.1 beta optimized for the kaboard plattform
  *
  * The contents of this file are subject to the Mozilla Public License
  * Version 1.1 (the "License"); you may not use this file except in
@@ -45,10 +45,15 @@
 #define LCD_EN			PB1		//!< Strobe Pin
 
 
+#define LCD_DATA1		PORTC	//!< Port used for data D0 to D4
+#define LCD_DATA1_PIN 	PINC	//!< Port used for reading the data D0 to D4
+#define LCD_DATA1_DDR	DDRC	//!< Data-Direction-Register for data D0 to D4
+#define LCD_DATA1_MASK	0x1F	//!< Mask to get the first 5 bits of a databyte
+#define LCD_DATA2		PORTD	//!< Port used for data D5 to D7
+#define LCD_DATA2_PIN 	PIND	//!< Port used for reading the data D5 to D7
+#define LCD_DATA2_DDR	DDRD	//!< Data-Direction-Register for data D5 to D7
+#define LCD_DATA2_MASK	0xE0	//!< Mask to get the last 3 bits of a databyte
 
-#define LCD_DATA		PORTD	//!< Port used for data
-#define LCD_DATA_PIN 	PIND	//!< Port used for reading the data
-#define LCD_DATA_DDR	DDRD	//!< Data-Direction-Register for data
 
 // Macros for (un)setting the control pins
 #define lcd_rs_high() (LCD_CTRL |= (1 << LCD_RS))	//!< Set the Register-Select pin high
@@ -93,7 +98,6 @@ static inline void lcd_write_byte(uint16_t pos,uint8_t byte);
 
 // Static inline functions, that can be used in the library and in the main programm
 
-
 /**
  * Generates the strobe signal for writing data.
  * This function is meant for internal usage only.
@@ -116,12 +120,18 @@ static inline void lcd_write_command(uint8_t cmd, uint8_t data) {
 	_delay_us(30);
 	lcd_rw_low();
 	lcd_rs_high();
-	LCD_DATA = cmd;
+	LCD_DATA1 &= ~LCD_DATA1_MASK;
+	LCD_DATA1 |= cmd & LCD_DATA1_MASK;
+	LCD_DATA2 &= ~LCD_DATA2_MASK;
+	LCD_DATA2 |= cmd & LCD_DATA2_MASK;
 	_delay_us(1);
 	lcd_strobe();
 
 	lcd_rs_low();
-	LCD_DATA = data;
+	LCD_DATA1 &= ~LCD_DATA1_MASK;
+	LCD_DATA1 |= data & LCD_DATA1_MASK;
+	LCD_DATA2 &= ~LCD_DATA2_MASK;
+	LCD_DATA2 |= data & LCD_DATA2_MASK;
 	_delay_us(1);
 	lcd_strobe();
 
@@ -144,17 +154,22 @@ uint8_t i,data;
 		_delay_us(30);
 		lcd_rw_low();
 		lcd_rs_high();
-		LCD_DATA = 0x0D;
+		LCD_DATA1 &= ~LCD_DATA1_MASK;
+		LCD_DATA1 |= 0x0D & LCD_DATA1_MASK;
+		LCD_DATA2 &= ~LCD_DATA2_MASK;
+		LCD_DATA2 |= 0x0D & LCD_DATA2_MASK;
 		_delay_us(1);
 		lcd_en_high();
 
-		LCD_DATA_DDR = 0x00;
+		LCD_DATA1_DDR &= ~LCD_DATA1_MASK;
+		LCD_DATA2_DDR &= ~LCD_DATA2_MASK;
 		lcd_rs_low();
 		lcd_rw_high();
 		_delay_us(1);
-		data = (uint8_t) LCD_DATA_PIN;
+		data = (uint8_t) (LCD_DATA1_PIN & LCD_DATA1_MASK) | (LCD_DATA2_PIN & LCD_DATA2_MASK);
 		lcd_en_low();
-		LCD_DATA_DDR = 0xFF;
+		LCD_DATA1_DDR |= LCD_DATA1_MASK;
+		LCD_DATA2_DDR |= LCD_DATA2_MASK;
 	}
 	return data;
 }

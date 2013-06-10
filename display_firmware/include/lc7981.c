@@ -1,7 +1,7 @@
 /*
  * lc7981.c
  *
- * Version 0.7 beta
+ * Version 0.7.1 beta optimized for the kaboard plattform
  *
  * The contents of this file are subject to the Mozilla Public License
  * Version 1.1 (the "License"); you may not use this file except in
@@ -38,8 +38,12 @@ uint8_t lcd_mode, 		//!< Currently used mode, can be text or graphic.
  */
 void lcd_init(uint8_t mode) {
 
-	LCD_DATA_DDR = 0xFF;
-	LCD_DATA = 0;
+	LCD_DATA1_DDR |= LCD_DATA1_MASK;
+	LCD_DATA1 &= ~LCD_DATA1_MASK;
+	LCD_DATA2_DDR |= LCD_DATA2_MASK;
+	LCD_DATA2 &= ~LCD_DATA2_MASK;
+
+
 	LCD_CRTL_DDR |= (1 << LCD_RS) | (1 << LCD_RW) | (1 << LCD_EN);
 	LCD_CTRL = 0;
 

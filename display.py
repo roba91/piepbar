@@ -30,5 +30,9 @@ class DisplayConnection(object):
 			while not self._ser.read() == resp:
 				self._ser.write(req)
 
+			print "Request was acked"
+
 			self._ser.write(paket)
 			success = (self._ser.read() == ack)
+
+		print "Data was acked"
