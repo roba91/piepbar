@@ -9,9 +9,8 @@ def init():
 	display_init()
 
 def main(*cmd_args):
-#	scan()
- 	init()
- 	pass
+	scan()
+	init()
 
 if __name__ == '__main__':
 	main(*sys.argv[1:])
