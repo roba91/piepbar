@@ -21,12 +21,14 @@ def handle_interrupt():
 ################ define special actions ################
 def reload_prices():
 	print "Fetching new price list..."
-	remote = get_new_prices()
-	if not remote:
+	remote_prices = get_new_prices()
+	if not remote_prices:
 		# TODO: @display
 		print "--> Fetching failed!"
 	else:
 		# TODO: @display
+		global prices
+		prices = remote_prices
 		print "--> Prices updated!"
 
 def shutdown():
@@ -62,10 +64,12 @@ def handle_code(code):
 	else: handle_unknown_code(code)
 
 def to_initial_state():
+	global user, products
 	products = []
 	user = []
 
 def handle_accept():
+	global user, products
 	# TODO: @display
 	print ">>> buying products for %s: %s" % (user, products)
 	buy_products(user, *products)
@@ -78,6 +82,7 @@ def handle_decline():
 	pass
 
 def handle_user_code(code):
+	global user
 	scanned_user = code.replace(USER_PREFIX, "", 1)
 	if user and user != scanned_user:
 		# TODO: @display
@@ -87,9 +92,11 @@ def handle_user_code(code):
 	print ">>> scanned user: %s" % user
 
 def handle_product_code(code):
+	global products
 	# TODO: @display
 	new_product = code.replace(PRODUCT_PREFIX, "", 1)
-	products.add(new_product)
+	products.append(new_product)
+	print ">>> scanned product: %s" % new_product
 
 def handle_unknown_code(code=None):
 	pass
