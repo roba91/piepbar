@@ -3,14 +3,10 @@
 
 import sys
 from handler import handle_scanning as scan
-from display import *
-
-def init():
-	display_init()
+import display # TODO: remove - just for testing the init of this module
 
 def main(*cmd_args):
 	scan()
-	init()
 
 if __name__ == '__main__':
 	main(*sys.argv[1:])
