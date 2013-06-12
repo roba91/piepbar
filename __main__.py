@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-#from handler import handle_scanning as scan
+from handler import handle_scanning as scan
 from display import *
 
 def init():

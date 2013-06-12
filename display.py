@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PIL import Image
+import Image
 
 screen = None
 
