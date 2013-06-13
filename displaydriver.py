@@ -4,9 +4,8 @@
 import serial
 from crcmod.predefined import mkCrcFun
 
-class DisplayConnection(object):
+class DisplayDriver(object):
 	
-
 	def __init__(self, port, baudrate=115200):
 		self._ser = serial.Serial(port, baudrate, timeout=0.250)
 		self._crc16 = mkCrcFun('crc16')
@@ -37,6 +36,21 @@ class DisplayConnection(object):
 		print "Data was acked"
 
 
-	def send_image(self, data):
+	def _pixel_to_byte(pixels,x,y):
+		byte = 0
+		for i in range(8):
+			if pixels[x+i,y] = (0,0,0) :
+				byte = byte | (1 << i)
+		return byte
+
+	def send_image(self, image):
+
+		data = ""
+
+		w,h = image.size
+		for y in range(h):
+			for x in range(0,w,8):
+				data = data + chr(self._pixel_to_byte(image,x,y))
+
 		self._send_half_image(data[:800],0)
 		self._send_half_image(data[800:],1)
