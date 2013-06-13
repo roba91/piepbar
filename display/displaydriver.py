@@ -42,7 +42,7 @@ class DisplayDriver(object):
 	def _pixel_to_byte(pixels,x,y):
 		byte = 0
 		for i in range(8):
-			if pixels[x+i,y] = (0,0,0) :
+			if pixels[x+i,y] == (0,0,0) :
 				byte = byte | (1 << i)
 		return byte
 

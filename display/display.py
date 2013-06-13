@@ -43,9 +43,10 @@ def display_mainview():
 	screen = base.copy()
 	draw = ImageDraw.Draw(screen)
 	draw.text((10, 25), "OH HAI!", font=font)
-
-	font = ImageFont.truetype(FONT_PATH, 14)
-	font_large = ImageFont.truetype(BOLDFONT_PATH, 14)
+	
+	try:
+		font = ImageFont.truetype(FONT_PATH, 14)
+		font_large = ImageFont.truetype(BOLDFONT_PATH, 14)
 	except:
 		print("Error: loading font!")
 		sys.exit()
@@ -75,5 +76,6 @@ def display_idle():
 
 def display_draw():
 	screen.show()
+	displaydriver.send_image(screen)
 
 
