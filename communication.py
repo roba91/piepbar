@@ -2,14 +2,23 @@
 # -*- coding: utf-8 -*-
 
 
-def get_remote_prices():
+def sync():
 	"""
-	Return as a dict with item and price information (item x price).
-	This method always returns an dict. If some error occurs an
-	empty dict ({}) is returned.
+	Fetches all available products and their prices from the
+	FS intranet. This function returns a tuple of dicts, ({...}, {...}).
+
+	The first dict contains a price list. The keys are of type int and
+	the values are of type ??.
+
+	The second dict contains a name list. The keys are of type int and
+	the values are of type string.
+
+	This method always returns a tuple of dicts. If an error occurs,
+	empty dicts are returned, i.e. ({},{}).
 	"""
 	# TODO: fetch the real prices
-	return {}
+	return {}, {}
+
 
 def add_bill(user, *products):
 	"""

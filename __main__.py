@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from handler import handle_scanning as scan
-import display # TODO: remove - just for testing the init of this module
+from handler import auto_update, scanner
+#import display # TODO: remove - just for testing the init of this module
 
 def main(*cmd_args):
-	scan()
+	auto_update()
+	scanner()
 
 if __name__ == '__main__':
 	main(*sys.argv[1:])
