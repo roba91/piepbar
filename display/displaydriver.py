@@ -6,8 +6,11 @@ from crcmod.predefined import mkCrcFun
 
 class DisplayDriver(object):
 	
-	def __init__(self, port, baudrate=115200):
+	def __init__(self, port="/dev/pidisplay", baudrate=115200):
 		self._ser = serial.Serial(port, baudrate, timeout=0.250)
+		if not self._ser:
+			raise ValueError("Unable to open %s with %d baud" % (port, baudrate))
+
 		self._crc16 = mkCrcFun('crc16')
 
 	def _build_packet(self, data):

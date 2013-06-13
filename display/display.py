@@ -4,6 +4,7 @@
 from os import path
 import sys
 import Image, ImageDraw, ImageFont
+from displaydriver import DisplayDriver
 
 base = None
 screen = None
@@ -12,8 +13,7 @@ font = ImageFont.truetype("LCD.ttf", 12) #TODO move to init
 SCREEN_PATH = path.join(path.dirname(path.realpath(__file__)), 'screen_base.png')
 
 def display_init():
-<<<<<<< HEAD:display.py
-	global screen, base
+	global screen, base, displaydriver
 
 	try:
 		base = Image.open(SCREEN_PATH)
@@ -27,6 +27,12 @@ def display_init():
 
 	base = base.convert("1")
 	screen = base.copy()
+
+	try:
+		displaydriver = DisplayDriver()
+	except:
+		print "Unable to open display"
+		sys.exit()
 
 def display_mainview():
 	global screen
