@@ -1,0 +1,12 @@
+Computer:	0xD0 									Request drawing upper half		
+Display: 	0xA0									Ack for drawing upper half
+Computer:	[800 Bytes image data] + [2byte CRC]	Image data + crc
+Display:	0xAA									Ack for Image data + crc
+
+Computer:	0xD1 									Request drawing lower half		
+Display: 	0xA1									Ack for drawing lower half
+Computer:	[800 Bytes image data] + [2byte CRC]	Image data + crc
+Display:	0xAB									Ack for Image data + crc
+
+If there is no Ack within a 500ms timeout the tramission of the half image,
+must be restarted.
