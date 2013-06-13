@@ -3,36 +3,80 @@
 
 from os import path
 import sys
-import Image
+import Image, ImageDraw, ImageFont
+from displaydriver import DisplayDriver
 
+base = None
+screen = None
+font = None
+font_large = None
+displaydriver = None
 
 SCREEN_PATH = path.join(path.dirname(path.realpath(__file__)), 'screen_base.png')
-screen = None
+FONT_PATH = path.join(path.dirname(path.realpath(__file__)), 'Terminus.ttf')
+BOLDFONT_PATH = path.join(path.dirname(path.realpath(__file__)), 'TerminusBold.ttf')
+
+DUMMY_DISPLAY = True # Set to false to use the real hardware
 
 def display_init():
-	#try:
-	screen = Image.open(SCREEN_PATH)
-	#except:
-	#	print("Error opening image file!")
-	#	sys.exit()
+	global screen, base, font, font_large, displaydriver
 
-	if not screen.size == (160,80) or not screen.mode == "1":
-		print("Error: Wrong image size (%s , %s)" % (screen.size, screen.mode))
+	try:
+		base = Image.open(SCREEN_PATH)
+	except:
+		print("Error opening image file!")
 		sys.exit()
 
-	screen.convert("1")
+	if not base.size == (160,80):
+		print("Error: Wrong image size %s" % base.size)
+		sys.exit()
+
+	base = base.convert("1")
+	screen = base.copy()
+
+	try:
+		displaydriver = DisplayDriver(dummy=DUMMY_DISPLAY)
+	except:
+		print "Unable to open display"
+		sys.exit()
 
 def display_mainview():
-	pass
+	global screen
+	screen = base.copy()
+	draw = ImageDraw.Draw(screen)
+	draw.text((10, 25), "OH HAI!", font=font)
+	
+	try:
+		font = ImageFont.truetype(FONT_PATH, 14)
+		font_large = ImageFont.truetype(BOLDFONT_PATH, 14)
+	except:
+		print("Error: loading font!")
+		sys.exit()
 
-def display_name():
-	pass
 
-def diplay_price():
-	pass
+def display_empty():
+	display_name("")
+	display_products("","")
+
+def display_name(name):
+	global screen
+	draw = ImageDraw.Draw(screen)
+	draw.rectangle(((0,0),(159,14)), fill=255)
+	draw.line([(0,14),(159,14)], fill=0)
+	draw.line([(0,16),(159,16)], fill=0)
+	draw.text((1,1), name, font=font_large)
+
+def display_products(drinks,sum):
+	global screen
+	draw = ImageDraw.Draw(screen)
+	draw.rectangle(((0,17),(159,79)), fill=255)
+	draw.line([(0,65),(159,65)], fill=0)
+	#draw.text([a-b for a,b in zip((158,82),font.getsize("Summe: %s" % sum))], "Summe: %s" % sum, font=font)
 
 def display_idle():
-	pass
+	display_mainview()
 
-def diplay_draw(image):
-	pass
+def display_draw():
+	displaydriver.send_image(screen)
+
+

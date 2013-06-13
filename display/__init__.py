@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from display import display_init
+from display import *
 # TODO: add interface functions here
 
 def init():
