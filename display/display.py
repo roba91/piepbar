@@ -16,7 +16,7 @@ SCREEN_PATH = path.join(path.dirname(path.realpath(__file__)), 'screen_base.png'
 FONT_PATH = path.join(path.dirname(path.realpath(__file__)), 'Terminus.ttf')
 BOLDFONT_PATH = path.join(path.dirname(path.realpath(__file__)), 'TerminusBold.ttf')
 
-DUMMY_DISPLAY = False # Set to false to use the real hardware
+DUMMY_DISPLAY = True # Set to false to use the real hardware
 
 def display_init():
 	global screen, base, font, font_large, displaydriver
