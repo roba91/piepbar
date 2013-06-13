@@ -3,9 +3,13 @@
 
 import sys
 from handler import handle_scanning as scan
-import display # TODO: remove - just for testing the init of this module
+from display import *
 
 def main(*cmd_args):
+	display_empty()
+	display_name("Penis Ulrich")
+	display_products([("Jizz", 34.00),("Säft", 1.56),("Bier", 4.5),("Bowasser", 2.3)],13.37)
+	display_draw()
 	scan()
 
 if __name__ == '__main__':
