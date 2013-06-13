@@ -22,13 +22,15 @@
 
 int main(void) {
 
+	DDRB |= (1 << PB5);
+
 	uart_init();
 
 	lcd_init(LCD_GRAPHIC);
 
 	lcd_clear();
 
-	lcd_plot_bitmap(0,0,gnulpf,gnulpfWIDTH, gnulpfHEIGHT);
+	//lcd_plot_bitmap(0,0,gnulpf,gnulpfWIDTH, gnulpfHEIGHT);
 
 	uint8_t buffer[800];
 	enum {IDLE, DATA, CRC} state = IDLE;
@@ -39,8 +41,14 @@ int main(void) {
 	uint8_t data;
 
 	while(1) {
-		data = uart_getc_timeout();
+		
+		data = uart_getc();
+		
+		
 		if(!uart_timed_out) {
+			PORTB |= (1 << PB5);
+			PORTB &= ~(1 << PB5);
+
 			switch(state) {
 				case IDLE:
 					if(data == 0xD0) {
@@ -108,6 +116,7 @@ int main(void) {
 			crc = 0;
 
 		}
+	
 	}
 
 
