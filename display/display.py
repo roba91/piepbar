@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from os import path
 import sys
 import Image, ImageDraw, ImageFont
 
@@ -8,11 +9,14 @@ base = None
 screen = None
 font = ImageFont.truetype("LCD.ttf", 12) #TODO move to init
 
+SCREEN_PATH = path.join(path.dirname(path.realpath(__file__)), 'screen_base.png')
+
 def display_init():
+<<<<<<< HEAD:display.py
 	global screen, base
 
 	try:
-		base = Image.open("screen_base.png")
+		base = Image.open(SCREEN_PATH)
 	except:
 		print("Error opening image file!")
 		sys.exit()
