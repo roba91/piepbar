@@ -13,21 +13,17 @@
 #include "include/lc7981.h"
 #include "include/uart.h"
 
-
-#include "8x8_horizontal_LSB_1.h"
 #include "gnulpf.h"
-//#include "12x16_horizontal_LSB_2.h"
-
-
 
 int main(void) {
+
+	DDRB |= (1 << PB5);
 
 	uart_init();
 
 	lcd_init(LCD_GRAPHIC);
 
 	lcd_clear();
-
 	lcd_plot_bitmap(0,0,gnulpf,gnulpfWIDTH, gnulpfHEIGHT);
 
 	uint8_t buffer[800];
@@ -39,8 +35,14 @@ int main(void) {
 	uint8_t data;
 
 	while(1) {
-		data = uart_getc_timeout();
+		
+		data = uart_getc();
+		
+		
 		if(!uart_timed_out) {
+			//PORTB |= (1 << PB5);
+			//PORTB &= ~(1 << PB5);
+
 			switch(state) {
 				case IDLE:
 					if(data == 0xD0) {
@@ -108,6 +110,7 @@ int main(void) {
 			crc = 0;
 
 		}
+	
 	}
 
 

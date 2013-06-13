@@ -6,8 +6,8 @@
 #include  <util/delay.h>
 
 
-#define BAUD 115200UL		// baudrate
-#define UART_TIMEOUT 250 	// Timeout in ms
+#define BAUD 76800UL		// baudrate
+#define UART_TIMEOUT 100	// Timeout in ms
 
 // Some calculations ...
 #define UBRR_VAL ((F_CPU+BAUD*8)/(BAUD*16)-1)   // Rounding magic
@@ -26,12 +26,22 @@ static inline void uart_init(void) {
 
 	UCSRB |= (1<<TXEN) | (1<<RXEN);  // UART TX
 	UCSRC = (1<<URSEL)|(1<<UCSZ1)|(1<<UCSZ0);  // Asynchronous 8N1
+
+	    // flush receive buffer
+    do
+    {
+        UDR;
+    }
+    while (UCSRA & (1 << RXC));
+
+	//reset tx and rx completeflags
+	UCSRA = (1 << RXC) | (1 << TXC) | (1 <<  UDRE); 
 }
 
 static inline void uart_putc(uint8_t data) {
 	UDR = data;						// write byte to data register
-	while (!(UCSRA & (1<< TXC))); 	// waiting for the uart to finish transmission
-	UCSRA |= (1 << TXC); 
+	while (!(UCSRA & (1<<  UDRE))); 	// waiting for the uart to finish transmission
+	UCSRA |= (1 <<  UDRE); 
 }
 
 static inline uint8_t uart_getc(void) {

@@ -16,6 +16,8 @@ SCREEN_PATH = path.join(path.dirname(path.realpath(__file__)), 'screen_base.png'
 FONT_PATH = path.join(path.dirname(path.realpath(__file__)), 'Terminus.ttf')
 BOLDFONT_PATH = path.join(path.dirname(path.realpath(__file__)), 'TerminusBold.ttf')
 
+DUMMY_DISPLAY = True # Set to false to use the real hardware
+
 def display_init():
 	global screen, base, font, font_large, displaydriver
 
@@ -33,7 +35,7 @@ def display_init():
 	screen = base.copy()
 
 	try:
-		displaydriver = DisplayDriver()
+		displaydriver = DisplayDriver(dummy=DUMMY_DISPLAY)
 	except:
 		print "Unable to open display"
 		sys.exit()
@@ -69,13 +71,12 @@ def display_products(drinks,sum):
 	draw = ImageDraw.Draw(screen)
 	draw.rectangle(((0,17),(159,79)), fill=255)
 	draw.line([(0,65),(159,65)], fill=0)
-	draw.text([a-b for a,b in zip((158,82),font.getsize("Summe: %s" % sum))], "Summe: %s" % sum, font=font)
+	#draw.text([a-b for a,b in zip((158,82),font.getsize("Summe: %s" % sum))], "Summe: %s" % sum, font=font)
 
 def display_idle():
 	display_mainview()
 
 def display_draw():
-	screen.show()
 	displaydriver.send_image(screen)
 
 
