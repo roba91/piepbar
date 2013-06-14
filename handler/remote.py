@@ -4,10 +4,13 @@
 
 def get_products():
 	"""
-	TODO: doc
+	Queries the products from the intranet and returns a dict containing
+	tuples. The dict keys are the ids of the objects (db id). The values
+	are tuples of names and prices - {obj_id: (name, price)}, obj_id: int,
+	name: String, price: ??.
 	"""
 	# TODO: fetch the real prices
-	return {}, {}
+	return {}
 
 
 def buy(user, *products):

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-DEFAULT_AUTO_UPDATE_PERIOD = 60.0 # in seconds
+DEFAULT_AUTO_UPDATE_PERIOD = 30.0 # in seconds
+FINISH_TIMEOUT = 15.0 # in seconds
 
 CODE_FORCE_EXIT = "_exit"
 CODE_FORCE_SYNC = "_sync"

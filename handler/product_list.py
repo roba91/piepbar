@@ -7,8 +7,9 @@ from remote import get_products
 
 class ProductList():
 	def __init__(self, *args, **kwargs):
-		self.lock = threading.RLock() # mutual exclusion for updates and purchases
+		self.lock = threading.Semaphore() # RLock() # mutual exclusion for updates and purchases
 		self.update()
+		self.data = {} # {data: (name, price)}
 
 	def update(self):
 		with self.lock:
@@ -24,5 +25,8 @@ class ProductList():
 
 	def get_price(self, obj_id):
 		return self.list[obj_id][1]
+
+	def contains(self, obj):
+		return obj in self.data
 
 PRODUCT_LIST = ProductList()
