@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from config import *
+
 
 def get_products():
 	"""
@@ -10,6 +12,7 @@ def get_products():
 	name: String, price: ??.
 	"""
 	# TODO: fetch the real prices
+	# requests seems to be a very nice library: http://docs.python-requests.org/en/latest/
 	return {}
 
 
