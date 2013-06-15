@@ -3,9 +3,3 @@
 
 from display import *
 # TODO: add interface functions here
-
-def init():
-	print ">>> initializing display..."
-	display_init()
-
-init()
