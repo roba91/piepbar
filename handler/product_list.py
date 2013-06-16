@@ -15,14 +15,14 @@ class CustomLock():
 
 class ProductList():
 	def __init__(self, *args, **kwargs):
-		#self.idle = threading.Event()
-		self.lock = threading.RLock() # mutual exclusion for updates and purchases
+		self.idle = threading.Event()
+		self.idle.set()
 		self.data = {} # {data: (name, price)}
 		self.update()
 
 	def update(self):
 		new_values = get_products()
-		self.wait()
+		self.idle.wait()
 		if new_values:
 			self.data = new_values
 			print ">>> Updated" # TODO: @display
