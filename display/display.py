@@ -3,9 +3,8 @@
 
 from os import path
 import sys
-import threading
 import time
-import Image, ImageDraw, ImageFont
+import Image, ImageDraw, ImageFont, ImageChops
 from displaydriver import DisplayDriver
 
 
@@ -14,6 +13,7 @@ MAIN_PATH = path.join(path.dirname(path.realpath(__file__)), 'main_bg.png')
 
 FONT_PATH = path.join(path.dirname(path.realpath(__file__)), 'Terminus.ttf')
 BOLD_PATH = path.join(path.dirname(path.realpath(__file__)), 'TerminusBold.ttf')
+DITHER_PATH = path.join(path.dirname(path.realpath(__file__)), 'dither_mask.png')
 
 DUMMY_DISPLAY = True # Set to false to use the real hardware
 
@@ -21,6 +21,18 @@ class Display(object):
 
 	def __init__(self, idle_bg=IDLE_PATH, main_bg=MAIN_PATH, font=FONT_PATH,
 				 font_size=14, bold_font=BOLD_PATH, bold_font_size=14):
+
+		try:
+			self._dither = Image.open(DITHER_PATH)
+		except:
+			print"Error opening dither mask!"
+			sys.exit()
+
+		if not self._dither.size == (160,80):
+			print"Error: Wrong image size %s" % self._dither.size
+			sys.exit()
+
+		self._dither = self._dither.convert('1')
 
 		if main_bg:
 			try:
@@ -76,16 +88,13 @@ class Display(object):
 		self._was_idle = True
 
 		self._viewmsg = False
-		self._msglock = threading.Lock()
 		self._msgscreen = Image.new('1', (160,80), 255)
 
 	def _draw(self):
-		self._msglock.acquire()
 		if self._viewmsg:
 			self._displaydriver.send_image(self._msgscreen)
 		else:
 			self._displaydriver.send_image(self._screen)
-		self._msglock.release()
 
 	def idle(self):
 		self._screen = self._idle_bg.copy()
@@ -124,8 +133,9 @@ class Display(object):
 		self._draw()
 
 	def message(self, text, delay=2):
-		#TODO delay
+		#TODO multi line messages
 		self._msgscreen = self._screen.copy()
+		self._msgscreen = ImageChops.lighter(self._msgscreen,self._dither)
 		draw = ImageDraw.Draw(self._msgscreen)
 
 		size = self._font.getsize(text)
@@ -141,9 +151,10 @@ class Display(object):
 		draw.text((textmargin[0][0]+2,textmargin[0][1]+2),text,font=self._font)
 		
 		self._viewmsg = True
-
 		self._draw()
-
+		time.sleep(delay)
+		self._viewmsg = False
+		self._draw()
 
 	
 
