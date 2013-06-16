@@ -4,14 +4,6 @@
 import threading
 from remote import get_products
 
-# TODO: write own lock
-
-class CustomLock():
-	def acquire():
-		pass
-
-	def release():
-		pass
 
 class ProductList():
 	def __init__(self, *args, **kwargs):
