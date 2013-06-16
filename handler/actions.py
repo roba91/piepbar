@@ -23,6 +23,7 @@ def sync():
 
 ############################### finish purchase ###############################
 def accept():
+	stop_timer()
 	if not user:
 		print ">>> no user specified" # TODO: @display
 	elif not products:
@@ -32,21 +33,26 @@ def accept():
 		buy(user, *products)
 		reset()
 
+def decline():
+	stop_timer()
+	print ">>> purchase aborted" # TODO: @display
+	reset()
+
 def timeout():
 	# accept as purchase
 	print ">>> timeout"
-	if not user or not products:
+	if not user and not products:
+		# the purchase was already handled -> should happen rarely
+		pass
+	elif not user or not products:
 		# no valid purchase -> decline
 		decline()
 	else:
 		accept()
 
-def decline():
-	print ">>> purchase aborted" # TODO: @display
-	reset()
-
 def reset():
 	global user, products, num_locks
+	stop_timer()
 	needs_release = products or user
 	products = []
 	user = []
@@ -68,10 +74,16 @@ def start_timer():
 	if timer:
 		timer.cancel()
 	timer = threading.Timer(FINISH_TIMEOUT, timeout)
+	timer.setDaemon(True)
 	timer.start()
+
+def stop_timer():
+	if timer:
+		timer.cancel()
 
 def user_code(scanned_user):
 	global user, num_locks
+	stop_timer()
 	acquire_lock()
 	if user and user != scanned_user:
 		print ">>> User updated!" # TODO: @display (warn, no abort)
@@ -81,11 +93,15 @@ def user_code(scanned_user):
 
 def product_code(product_id):
 	global products, num_locks
+	stop_timer()
 	acquire_lock()
-	new_product = int(product_id)
-	products.append(new_product)
-	start_timer()
-	print ">>> scanned product: %s" % new_product # TODO: @display
+	product_id = int(product_id)
+	if not PRODUCT_LIST.contains(product_id):
+		print ">>> product %i not found" % product_id
+	else:
+		products.append(product_id)
+		start_timer()
+		print ">>> added product %s (%s Euro)" % (PRODUCT_LIST.get_name(product_id), PRODUCT_LIST.get_price(product_id)) # TODO: @display
 
 ################################ handle input #################################
 ACTIONS = {

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from actions import shutdown
 from config import *
 
 def scanner():

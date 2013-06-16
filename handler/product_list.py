@@ -4,27 +4,36 @@
 import threading
 from remote import get_products
 
+# TODO: write own lock
+
+class CustomLock():
+	def acquire():
+		pass
+
+	def release():
+		pass
 
 class ProductList():
 	def __init__(self, *args, **kwargs):
-		self.lock = threading.Semaphore() # RLock() # mutual exclusion for updates and purchases
-		self.update()
+		#self.idle = threading.Event()
+		self.lock = threading.RLock() # mutual exclusion for updates and purchases
 		self.data = {} # {data: (name, price)}
+		self.update()
 
 	def update(self):
-		with self.lock:
-			new_values = get_products()
-			if new_values:
-				self.data = new_values
-				print ">>> Updated" # TODO: @display
-			else:
-				print ">>> Update Failed" # TODO: @display
+		new_values = get_products()
+		self.wait()
+		if new_values:
+			self.data = new_values
+			print ">>> Updated" # TODO: @display
+		else:
+			print ">>> Update Failed" # TODO: @display
 
 	def get_name(self, obj_id):
-		return self.list[obj_id][0]
+		return self.data[obj_id][0]
 
 	def get_price(self, obj_id):
-		return self.list[obj_id][1]
+		return self.data[obj_id][1]
 
 	def contains(self, obj):
 		return obj in self.data

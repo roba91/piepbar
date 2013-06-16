@@ -8,15 +8,15 @@ from display import *
 
 def main(*cmd_args):
 	#display_empty()
-	lcd = Display()
+	# lcd = Display()
 
 	#lcd.idle()
 	#lcd.message("ERROR: Wrong code!")
-	lcd.update(name = "Penis Ulrich")
+	# lcd.update(name = "Penis Ulrich")
 	#lcd.update(drinks = [(u"Sääääääääääääääääft", 1.56),("Bowasser", 2.3)], total = 13.37)
-	lcd.update(drinks = [("foo",12.33),("Jizz", 34.00),(u"Säft", 1.56),("Bier", 4.5),("Bowasser", 2.3)], total = 13.37)
-	lcd.message("I didn't know\nit was you", heading="OH HAI MARC!")
-	lcd.message("Thanks,\nyou're my favourite\ncostumer!", align='center')
+	# lcd.update(drinks = [("foo",12.33),("Jizz", 34.00),(u"Säft", 1.56),("Bier", 4.5),("Bowasser", 2.3)], total = 13.37)
+	# lcd.message("I didn't know\nit was you", heading="OH HAI MARC!")
+	# lcd.message("Thanks,\nyou're my favourite\ncostumer!", align='center')
 	#lcd.idle()
 	#lcd.update(name = "Horst")
 
