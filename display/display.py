@@ -132,29 +132,51 @@ class Display(object):
 
 		self._draw()
 
-	def message(self, text, delay=2):
-		#TODO multi line messages
+	def message(self, text, heading=None , delay=2, align='left'):
 		self._msgscreen = self._screen.copy()
 		self._msgscreen = ImageChops.lighter(self._msgscreen,self._dither)
 		draw = ImageDraw.Draw(self._msgscreen)
 
-		size = self._font.getsize(text)
+		lines = text.splitlines()
+		sizes = [self._font.getsize(x) for x in lines]
 
-		textmargin = [
-			((160-size[0])//2-2,
-			(80-size[1])//2-2),
-			((160-size[0])//2+size[0]+2,
-			(80-size[1])//2+size[1]+2),
+		if heading:
+			sizes = [self._bold_font.getsize(heading)] + sizes
+
+		textsize = (
+			max(s[0] for s in sizes),
+			sum(s[1] for s in sizes))
+
+		boxsize = [
+			((160-textsize[0])//2-4,
+			(80-textsize[1])//2-2),
+			((160-textsize[0])//2+textsize[0],
+			(80-textsize[1])//2+textsize[1]),
 		]
 
-		draw.rectangle(textmargin,outline=0,fill=255)
-		draw.text((textmargin[0][0]+2,textmargin[0][1]+2),text,font=self._font)
+		draw.rectangle(boxsize,outline=0,fill=255)
+
+		ypos = boxsize[0][1]+2
+		if heading:
+			if align=='center':
+				draw.text((79-(sizes[0][0]//2),ypos),heading,font=self._bold_font)
+			elif align=='left':
+				draw.text((boxsize[0][0]+3,ypos),heading,font=self._bold_font)
+			else:
+				print "ERROR: Unknown alignment \'%s\'" % align
+			ypos += sizes.pop(0)[1]
+
+		for i in range(len(lines)):
+			if align=='center':
+				draw.text((78-(sizes[i][0]//2),ypos),lines[i],font=self._font)
+			elif align=='left':
+				draw.text((boxsize[0][0]+3,ypos),lines[i],font=self._font)
+			else:
+				print "ERROR: Unknown alignment \'%s\'" % align
+			ypos += sizes[i][1]
 		
 		self._viewmsg = True
 		self._draw()
 		time.sleep(delay)
 		self._viewmsg = False
 		self._draw()
-
-	
-
