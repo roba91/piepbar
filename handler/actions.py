@@ -24,9 +24,11 @@ def sync():
 def accept():
 	stop_timer()
 	if not user:
-		print ">>> no user specified" # TODO: @display
+		# print ">>> no user specified" # TODO: @display
+		LCD.message(**MSG_ACCEPT_NO_USER)
 	elif not products:
-		print ">>> no products selected" # TODO: @display
+		# print ">>> no products selected" # TODO: @display
+		LCD.message(**MSG_ACCEPT_NO_PRODUCTS)
 	else:
 		print ">>> buying products for %s: %s" % (user, products) # TODO: @display
 		buy(user, *products)
@@ -34,7 +36,7 @@ def accept():
 
 def decline():
 	stop_timer()
-	print ">>> purchase aborted" # TODO: @display
+	LCD.message(MSG_DECLINE)
 	reset()
 
 def timeout():
@@ -75,7 +77,7 @@ def user_code(scanned_user):
 	stop_timer()
 	PRODUCT_LIST.idle.clear()
 	if user and user != scanned_user:
-		print ">>> User updated!" # TODO: @display (warn, no abort)
+		LCD.message(**MSG_FUNC_USER_CHANGE(user))
 	user = scanned_user
 	start_timer()
 	print ">>> scanned user: %s" % user # TODO: @display
@@ -84,9 +86,9 @@ def product_code(product_id):
 	global products
 	stop_timer()
 	PRODUCT_LIST.idle.clear()
-	product_id = int(product_id)
+	product_id = int(product_id) # TODO: chech if this works -> catch exception
 	if not PRODUCT_LIST.contains(product_id):
-		print ">>> product %i not found" % product_id
+		LCD.message(**MSG_UNKNOWN_PRODUCT)
 	else:
 		products.append(product_id)
 		start_timer()
@@ -108,5 +110,5 @@ def handle_input(code):
 	elif code.startswith(CODE_PREFIX_PRODUCT):
 		product_code(code.replace(CODE_PREFIX_PRODUCT, "", 1))
 	else:
-		print "Unknown code scanned!" # TODO: @display
+		LCD.message(**MSG_UNKOWN_CODE)
 

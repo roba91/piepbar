@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from actions import shutdown
+import sys
+import time
+import threading
 from config import *
+from actions import shutdown, handle_input, sync
 
 def scanner():
-	from actions import handle_input
+	LCD.idle()
 	while True:
 		try:
 			handle_input(raw_input())
@@ -14,13 +17,9 @@ def scanner():
 
 def handle_interrupt():
 	print "\n>>> Fools, don't let them escape! <<<\n"
-	import sys
 	sys.exit(0) # for testing reasons
 
 def auto_update(update_period=DEFAULT_AUTO_UPDATE_PERIOD):
-	import threading
-	import time
-	from actions import sync
 	def auto_sync(update_period, *args, **kwargs):
 		while True:
 			time.sleep(update_period)

@@ -6,6 +6,7 @@ import sys
 import time
 import Image, ImageDraw, ImageFont, ImageChops
 from displaydriver import DisplayDriver
+from config import *
 
 
 IDLE_PATH = path.join(path.dirname(path.realpath(__file__)), 'idle_bg.png')
@@ -132,7 +133,7 @@ class Display(object):
 
 		self._draw()
 
-	def message(self, text, heading=None , delay=2, align='left'):
+	def message(self, text, heading=None , delay=DEFAULT_MESSAGE_DELAY, align=DEFAULT_MESSAGE_ALIGN):
 		self._msgscreen = self._screen.copy()
 		self._msgscreen = ImageChops.lighter(self._msgscreen,self._dither)
 		draw = ImageDraw.Draw(self._msgscreen)
