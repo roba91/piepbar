@@ -13,21 +13,24 @@ timer = None
 
 ############################### special actions ###############################
 def shutdown():
-	print ">>> Exiting" # TODO: @display
+	LCD.message(**MSG_EXIT)
 	sys.exit()
 
 def sync():
-	print ">>> Syncing" # TODO: @display
+	LCD.message_on(**MSG_SYNC_ON)
+	PRODUCT_LIST.update()
+	LCD.message_off(**MSG_SYNC_OFF)
+
+def auto_sync():
+	# this is harpooning automagically during idle time - do not display anything
 	PRODUCT_LIST.update()
 
 ############################### finish purchase ###############################
 def accept():
 	stop_timer()
 	if not user:
-		# print ">>> no user specified" # TODO: @display
 		LCD.message(**MSG_ACCEPT_NO_USER)
 	elif not products:
-		# print ">>> no products selected" # TODO: @display
 		LCD.message(**MSG_ACCEPT_NO_PRODUCTS)
 	else:
 		print ">>> buying products for %s: %s" % (user, products) # TODO: @display
@@ -36,7 +39,7 @@ def accept():
 
 def decline():
 	stop_timer()
-	LCD.message(MSG_DECLINE)
+	LCD.message(**MSG_DECLINE)
 	reset()
 
 def timeout():
@@ -77,7 +80,7 @@ def user_code(scanned_user):
 	stop_timer()
 	PRODUCT_LIST.idle.clear()
 	if user and user != scanned_user:
-		LCD.message(**MSG_FUNC_USER_CHANGE(user))
+		LCD.message(**MSG_FUNC_USER_CHANGE(scanned_user))
 	user = scanned_user
 	start_timer()
 	print ">>> scanned user: %s" % user # TODO: @display
@@ -86,8 +89,13 @@ def product_code(product_id):
 	global products
 	stop_timer()
 	PRODUCT_LIST.idle.clear()
-	product_id = int(product_id) # TODO: chech if this works -> catch exception
-	if not PRODUCT_LIST.contains(product_id):
+	try:
+		# don't let fools run the system into malicious states -> checked cast
+		product_id = int(product_id)
+	except ValueError:
+		product_id = None
+	print product_id
+	if not product_id or not PRODUCT_LIST.contains(product_id):
 		LCD.message(**MSG_UNKNOWN_PRODUCT)
 	else:
 		products.append(product_id)

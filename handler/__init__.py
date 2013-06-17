@@ -5,7 +5,7 @@ import sys
 import time
 import threading
 from config import *
-from actions import shutdown, handle_input, sync
+from actions import shutdown, handle_input, auto_sync
 
 def scanner():
 	LCD.idle()
@@ -20,10 +20,10 @@ def handle_interrupt():
 	sys.exit(0) # for testing reasons
 
 def auto_update(update_period=DEFAULT_AUTO_UPDATE_PERIOD):
-	def auto_sync(update_period, *args, **kwargs):
+	def run_background(update_period, *args, **kwargs):
 		while True:
 			time.sleep(update_period)
-			sync()
-	thread = threading.Thread(target=auto_sync, args=[update_period])
+			auto_sync()
+	thread = threading.Thread(target=run_background, args=[update_period])
 	thread.setDaemon(True)
 	thread.start()
