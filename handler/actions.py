@@ -32,18 +32,20 @@ def auto_sync():
 def accept():
 	stop_timer()
 	if not user:
+		beep()
 		LCD.message(**MSG_ACCEPT_NO_USER)
 	elif not products:
+		beep()
 		LCD.message(**MSG_ACCEPT_NO_PRODUCTS)
 	else:
 		LCD.message_on(**MSG_BUY_ON(user))
 		buy(user, *products)
 		reset()
 		LCD.message_off(**MSG_BUY_OFF)
-		print ">>>>>>>>>>>>> fin accept"
 
 def decline():
 	stop_timer()
+	beep()
 	LCD.message(**MSG_DECLINE)
 	reset()
 
@@ -90,6 +92,7 @@ def user_code(scanned_user):
 	stop_timer()
 	PRODUCT_LIST.idle.clear()
 	if user and user != scanned_user:
+		beep()
 		LCD.message(**MSG_FUNC_USER_CHANGE(scanned_user))
 	user = scanned_user
 	start_timer()
@@ -127,5 +130,6 @@ def handle_input(code):
 	elif code.startswith(CODE_PREFIX_PRODUCT):
 		product_code(code.replace(CODE_PREFIX_PRODUCT, "", 1))
 	else:
+		beep()
 		LCD.message(**MSG_UNKOWN_CODE)
 

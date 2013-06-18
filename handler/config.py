@@ -49,3 +49,9 @@ MSG_BUY_RETRY = {'heading': 'Retrying...', 'text': 'Wiederhole Vorgang.\nIntrane
 MSG_BUY_RETRY_WAIT = 10
 MSG_SYNC_SUCCESS = {'heading': 'Sync ok', 'text': u'Getränke sind wieder\nup to date'}
 MSG_SYNC_FAILED = {'heading': 'Sync failed', 'text': 'Irgendwas ist schief\ngelaufen'}
+
+
+################################### beep ###################################
+
+def beep():
+    print '\a'
