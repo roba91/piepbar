@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import time
 import json
 import requests
 from config import *
@@ -13,12 +14,12 @@ def get_products():
 	are tuples of names and prices - {obj_id: (name, price)}, obj_id: int,
 	name: String, price: ??.
 	"""
-	r = requests.get(URL_SYNC, auth=(AUTH_USER, AUTH_PASSWORD))
-	data = decode_product_list(r.json())
-	print "###################### Products ######################"
-	print str(data).replace("),", "),\n")
-	print "######################################################"
-	return data
+	try:
+		r = requests.get(URL_SYNC, auth=(AUTH_USER, AUTH_PASSWORD))
+		data = decode_product_list(r.json())
+		return data
+	except Exception:
+		return {}
 
 
 def buy(user, *products):
@@ -32,6 +33,16 @@ def buy(user, *products):
 	beverages = encode_buy(products)
 	payload = {'buy': {'beverages': beverages, 'user': user}}
 	headers = {'content-type': 'application/json'}
-	r = requests.post(URL_BUY, data=json.dumps(payload), headers=headers) # TODO: catch ConnectionError and wrong status code
-
-	# TODO: either display error and block until the purchase succeeds, or save
+	def perform_purchase(url, data, head):
+		try:
+			r = requests.post(url, data=data, headers=head, auth=(AUTH_USER, AUTH_PASSWORD))
+			return r.status_code == 200
+		except requests.ConnectionError:
+			return False
+	error = False
+	while not perform_purchase(URL_BUY, json.dumps(payload), headers):
+		if not error:
+			# do not permanently refresh the display with the same thing
+			LCD.message_on(**MSG_BUY_RETRY)
+			error = True
+		time.sleep(MSG_BUY_RETRY_WAIT)

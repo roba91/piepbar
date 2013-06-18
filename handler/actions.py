@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import time
 import sys
 import threading
 from product_list import PRODUCT_LIST
@@ -18,8 +19,10 @@ def shutdown():
 
 def sync():
 	LCD.message_on(**MSG_SYNC_ON)
-	PRODUCT_LIST.update()
-	LCD.message_off(**MSG_SYNC_OFF)
+	success = PRODUCT_LIST.update()
+	time.sleep(MSG_SYNC_DELAY)
+	if success: LCD.message(**MSG_SYNC_SUCCESS)
+	else: LCD.message(**MSG_SYNC_FAILED)
 
 def auto_sync():
 	# this is harpooning automagically during idle time - do not display anything
@@ -50,10 +53,8 @@ def timeout():
 		pass
 	elif not user or not products:
 		# no valid purchase -> decline
-		# TODO: @display
 		decline()
 	else:
-		# TODO: @display
 		accept()
 
 def reset():
