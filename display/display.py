@@ -102,7 +102,7 @@ class Display(object):
 		self._was_idle = True
 		self._draw()
 
-	def update(self, name=None, drinks=None, total=None):
+	def update(self, name=None, drinks=None, total=0):
 		if self._was_idle:
 			self._screen = self._main_bg.copy()
 			self._was_idle = False
@@ -118,6 +118,7 @@ class Display(object):
 
 			y = 53
 			for drink in drinks[:-5:-1]:
+				# TODO: trim drink name
 				if len(drinks)>4 and drink == drinks[-4]:
 					draw.text((1,17),"und noch %s mehr..." % (len(drinks)-3),font=self._font)
 				else:
@@ -126,10 +127,9 @@ class Display(object):
 					draw.text((1,y),drink[0],font=self._font)
 				y=y-12
 
-		if total:
-			size = self._font.getsize("Summe: %.2f" % total)
-			draw.rectangle([0,67,159,79],fill=255)
-			draw.text((156-size[0],68),"Summe: %.2f" % total,font=self._bold_font)
+		size = self._font.getsize("Summe: %.2f" % total)
+		draw.rectangle([0,67,159,79],fill=255)
+		draw.text((156-size[0],68),"Summe: %.2f" % total,font=self._bold_font)
 
 		self._draw()
 

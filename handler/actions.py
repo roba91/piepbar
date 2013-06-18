@@ -33,9 +33,10 @@ def accept():
 	elif not products:
 		LCD.message(**MSG_ACCEPT_NO_PRODUCTS)
 	else:
-		print ">>> buying products for %s: %s" % (user, products) # TODO: @display
+		LCD.message_on(**MSG_BUY_ON(user))
 		buy(user, *products)
 		reset()
+		LCD.message_off(**MSG_BUY_OFF)
 
 def decline():
 	stop_timer()
@@ -44,14 +45,15 @@ def decline():
 
 def timeout():
 	# accept as purchase
-	print ">>> timeout"
 	if not user and not products:
 		# the purchase was already handled -> should happen rarely
 		pass
 	elif not user or not products:
 		# no valid purchase -> decline
+		# TODO: @display
 		decline()
 	else:
+		# TODO: @display
 		accept()
 
 def reset():
@@ -60,6 +62,7 @@ def reset():
 	needs_release = products or user
 	products = []
 	user = []
+	LCD.idle()
 	PRODUCT_LIST.idle.set()
 
 ################################ do purchasing ################################
@@ -75,6 +78,11 @@ def stop_timer():
 	if timer:
 		timer.cancel()
 
+def update_display():
+	drinks = [(PRODUCT_LIST.get_name(pid), PRODUCT_LIST.get_price(pid)) for pid in products]
+	total = sum([PRODUCT_LIST.get_price(pid) for pid in products])
+	LCD.update(user, drinks, total)
+
 def user_code(scanned_user):
 	global user
 	stop_timer()
@@ -83,24 +91,23 @@ def user_code(scanned_user):
 		LCD.message(**MSG_FUNC_USER_CHANGE(scanned_user))
 	user = scanned_user
 	start_timer()
-	print ">>> scanned user: %s" % user # TODO: @display
+	update_display()
 
 def product_code(product_id):
 	global products
 	stop_timer()
 	PRODUCT_LIST.idle.clear()
 	try:
-		# don't let fools run the system into malicious states -> checked cast
+		# don't let fools run the system into malicious states -> check cast
 		product_id = int(product_id)
 	except ValueError:
 		product_id = None
-	print product_id
 	if not product_id or not PRODUCT_LIST.contains(product_id):
 		LCD.message(**MSG_UNKNOWN_PRODUCT)
 	else:
 		products.append(product_id)
 		start_timer()
-		print ">>> added product %s (%s Euro)" % (PRODUCT_LIST.get_name(product_id), PRODUCT_LIST.get_price(product_id)) # TODO: @display
+		update_display()
 
 ################################ handle input #################################
 ACTIONS = {
