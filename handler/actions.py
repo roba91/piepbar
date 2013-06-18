@@ -40,6 +40,7 @@ def accept():
 		buy(user, *products)
 		reset()
 		LCD.message_off(**MSG_BUY_OFF)
+		print ">>>>>>>>>>>>> fin accept"
 
 def decline():
 	stop_timer()

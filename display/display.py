@@ -185,7 +185,8 @@ class Display(object):
 		if delay and delay > 0: time.sleep(delay)
 
 	def message_off(self, delay=None):
-		if delay and delay > 0: time.sleep(delay)
+		if delay and delay > 0:
+			time.sleep(delay)
 		self._viewmsg = False
 		self._draw()
 
