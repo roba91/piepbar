@@ -22,8 +22,8 @@ CODE_UNDO = '__undo' # undo last item selection
 CODE_PREFIX_USER = 'user__'
 CODE_PREFIX_PRODUCT = 'item__'
 
-URL_SYNC = 'http://localhost:3000/getraenke.json'
-URL_BUY = 'http://localhost:3000/rechnungen/buy'
+URL_SYNC = 'http://localhost:3000/api/items.json'
+URL_BUY = 'http://localhost:3000/api/buy'
 AUTH_USER = 'user'
 AUTH_PASSWORD = 'password'
 
