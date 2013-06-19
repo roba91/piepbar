@@ -13,13 +13,17 @@ class ProductList():
 		self.update()
 
 	def update(self):
+		"""
+		Tries to update the ProductList.
+		Returns True on success, False otherwise.
+		"""
 		new_values = get_products()
 		self.idle.wait()
 		if new_values:
 			self.data = new_values
-			print ">>> Updated" # TODO: @display
+			return True
 		else:
-			print ">>> Update Failed" # TODO: @display
+			return False
 
 	def get_name(self, obj_id):
 		return self.data[obj_id][0]

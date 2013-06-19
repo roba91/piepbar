@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import time
 import sys
 import threading
 from product_list import PRODUCT_LIST
@@ -18,8 +19,10 @@ def shutdown():
 
 def sync():
 	LCD.message_on(**MSG_SYNC_ON)
-	PRODUCT_LIST.update()
-	LCD.message_off(**MSG_SYNC_OFF)
+	success = PRODUCT_LIST.update()
+	time.sleep(MSG_SYNC_DELAY)
+	if success: LCD.message(**MSG_SYNC_SUCCESS)
+	else: LCD.message(**MSG_SYNC_FAILED)
 
 def auto_sync():
 	# this is harpooning automagically during idle time - do not display anything
@@ -29,17 +32,24 @@ def auto_sync():
 def accept():
 	stop_timer()
 	if not user:
+		beep()
 		LCD.message(**MSG_ACCEPT_NO_USER)
 	elif not products:
+		beep()
 		LCD.message(**MSG_ACCEPT_NO_PRODUCTS)
 	else:
+		# message_on() and reset() redraw the screen -> MSG_BUY_ON shown twice
 		LCD.message_on(**MSG_BUY_ON(user))
-		buy(user, *products)
+		success = buy(user, *products)
+		if not success:
+			# display error message -> nothing purchased
+			LCD.message_on(**MSG_BUY_FAILED)
 		reset()
 		LCD.message_off(**MSG_BUY_OFF)
 
 def decline():
 	stop_timer()
+	beep()
 	LCD.message(**MSG_DECLINE)
 	reset()
 
@@ -50,10 +60,8 @@ def timeout():
 		pass
 	elif not user or not products:
 		# no valid purchase -> decline
-		# TODO: @display
 		decline()
 	else:
-		# TODO: @display
 		accept()
 
 def reset():
@@ -84,10 +92,12 @@ def update_display():
 	LCD.update(user, drinks, total)
 
 def user_code(scanned_user):
+	# if the user is allowed to buy things is checked by the intranet
 	global user
 	stop_timer()
 	PRODUCT_LIST.idle.clear()
 	if user and user != scanned_user:
+		beep()
 		LCD.message(**MSG_FUNC_USER_CHANGE(scanned_user))
 	user = scanned_user
 	start_timer()
@@ -125,5 +135,6 @@ def handle_input(code):
 	elif code.startswith(CODE_PREFIX_PRODUCT):
 		product_code(code.replace(CODE_PREFIX_PRODUCT, "", 1))
 	else:
+		beep()
 		LCD.message(**MSG_UNKOWN_CODE)
 
