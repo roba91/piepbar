@@ -38,8 +38,12 @@ def accept():
 		beep()
 		LCD.message(**MSG_ACCEPT_NO_PRODUCTS)
 	else:
+		# message_on() and reset() redraw the screen -> MSG_BUY_ON shown twice
 		LCD.message_on(**MSG_BUY_ON(user))
-		buy(user, *products)
+		success = buy(user, *products)
+		if not success:
+			# display error message -> nothing purchased
+			LCD.message_on(**MSG_BUY_FAILED)
 		reset()
 		LCD.message_off(**MSG_BUY_OFF)
 
@@ -88,6 +92,7 @@ def update_display():
 	LCD.update(user, drinks, total)
 
 def user_code(scanned_user):
+	# if the user is allowed to buy things is checked by the intranet
 	global user
 	stop_timer()
 	PRODUCT_LIST.idle.clear()

@@ -138,6 +138,7 @@ class Display(object):
 		self.message_off(delay=delay)
 
 	def message_on(self, text, heading=None, align=DEFAULT_MESSAGE_ALIGN, delay=None):
+		print "[message_on] %s: %s" % (text, heading)
 		self._msgscreen = self._screen.copy()
 		self._msgscreen = ImageChops.lighter(self._msgscreen,self._dither)
 		draw = ImageDraw.Draw(self._msgscreen)
@@ -185,6 +186,7 @@ class Display(object):
 		if delay and delay > 0: time.sleep(delay)
 
 	def message_off(self, delay=None):
+		print "[message_off]"
 		if delay and delay > 0:
 			time.sleep(delay)
 		self._viewmsg = False

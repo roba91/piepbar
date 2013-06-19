@@ -27,22 +27,30 @@ def buy(user, *products):
 	Takes a user id (sci login name) and a list of products
 	(db id, may still require casting) and adds the bill to the intranet.
 
-	In case of an error, all information must be saved persistently.
-	No errors must ever be raised by this function.
+	In case of a communication error this method blocks and retries to
+	add the bill to the intranet.
+
+	If the bill was added successfully True is returned. Otherwise,
+	if the given user is not allowed to purchase things or a products
+	is unknown, False is returned.
 	"""
 	beverages = encode_buy(products)
 	payload = {'buy': {'beverages': beverages, 'user': user}}
 	headers = {'content-type': 'application/json'}
-	def perform_purchase(url, data, head):
+	# HTTP-200 -> ok
+	# HTTP-422 -> scanned user is not allowed to buy stuff
+	# HTTP-otherwise -> something went wrong, retry
+	while True:
 		try:
-			r = requests.post(url, data=data, headers=head, auth=(AUTH_USER, AUTH_PASSWORD))
-			return r.status_code == 200
+			r = requests.post(URL_BUY, data=json.dumps(payload), headers=headers, auth=(AUTH_USER, AUTH_PASSWORD))
+			if r.status_code == 200:
+				return True
+			elif r.status_code == 422:
+				return False
+			else:
+				# something went terribly wrong, retry
+				LCD.message_on(**MSG_BUY_RETRY)
+				time.sleep(MSG_BUY_RETRY_WAIT)
 		except requests.ConnectionError:
-			return False
-	error = False
-	while not perform_purchase(URL_BUY, json.dumps(payload), headers):
-		if not error:
-			# do not permanently refresh the display with the same thing
 			LCD.message_on(**MSG_BUY_RETRY)
-			error = True
-		time.sleep(MSG_BUY_RETRY_WAIT)
+			time.sleep(MSG_BUY_RETRY_WAIT)
