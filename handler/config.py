@@ -6,6 +6,8 @@ from display import Display, DEFAULT_MESSAGE_DELAY
 
 LCD = Display()
 
+DEBUG = True
+
 DEFAULT_AUTO_UPDATE_PERIOD = 120.0 # in seconds
 FINISH_TIMEOUT = 25.0 # in seconds
 
@@ -14,6 +16,8 @@ CODE_FORCE_SYNC = '__sync' # TODO: use more save code?
 
 CODE_DECLINE = '__decline'
 CODE_ACCEPT = '__accept'
+
+CODE_UNDO = '__undo' # undo last item selection
 
 CODE_PREFIX_USER = 'user__'
 CODE_PREFIX_PRODUCT = 'item__'
@@ -56,3 +60,9 @@ MSG_SYNC_FAILED = {'heading': 'Sync failed', 'text': 'Irgendwas ist schief\ngela
 
 def beep():
     print '\a'
+
+
+################################### debug ##################################
+
+def debug(src, msg):
+    print "[%s] %s" % (src, msg)

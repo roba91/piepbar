@@ -18,8 +18,10 @@ def get_products():
 		r = requests.get(URL_SYNC, auth=(AUTH_USER, AUTH_PASSWORD))
 		data = decode_product_list(r.json())
 		# print str(data).replace("),", "),\n")
+		debug("remote:get_products", "successfully read data")
 		return data
-	except Exception:
+	except Exception, e:
+		debug("remote:get_products", "fetching failed; %s: %s" % (type(e).__name__, e))
 		return {}
 
 
@@ -41,17 +43,22 @@ def buy(user, *products):
 	# HTTP-200 -> ok
 	# HTTP-422 -> scanned user is not allowed to buy stuff
 	# HTTP-otherwise -> something went wrong, retry
+	debug("remote:buy", "init buy sequence")
 	while True:
 		try:
 			r = requests.post(URL_BUY, data=json.dumps(payload), headers=headers, auth=(AUTH_USER, AUTH_PASSWORD))
 			if r.status_code == 200:
+				debug("remote:buy", "...everything worked fine")
 				return True
 			elif r.status_code == 422:
+				debug("remote:buy", "...did not work (user or product unknown by FSIntra")
 				return False
 			else:
 				# something went terribly wrong, retry
+				debug("remote:buy", "...worked perfectly fine")
 				LCD.message_on(**MSG_BUY_RETRY)
 				time.sleep(MSG_BUY_RETRY_WAIT)
 		except requests.ConnectionError:
+			debug("remote:buy", "connection refused. Are you online")
 			LCD.message_on(**MSG_BUY_RETRY)
 			time.sleep(MSG_BUY_RETRY_WAIT)

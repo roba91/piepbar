@@ -17,12 +17,15 @@ class ProductList():
 		Tries to update the ProductList.
 		Returns True on success, False otherwise.
 		"""
+		debug("product_list:update", "fetching data")
 		new_values = get_products()
 		self.idle.wait()
 		if new_values:
 			self.data = new_values
+			debug("product_list:update", "fetching done")
 			return True
 		else:
+			debug("product_list:update", "fetching failed")
 			return False
 
 	def get_name(self, obj_id):
