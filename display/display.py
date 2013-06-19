@@ -121,9 +121,9 @@ class Display(object):
 			draw.rectangle([0,17,159,65],fill=255)
 
 			y = 53
-			for drink in drinks[:-5:-1]:
+			for i,drink in enumerate(drinks[:-5:-1]):
 				# TODO: trimming still not perfect
-				if len(drinks)>4 and drink == drinks[-4]:
+				if len(drinks)>4 and i == 3:
 					draw.text((1,17),"und noch %s mehr..." % (len(drinks)-3),font=self._font)
 				else:
 					if(len(drink[0]+"%s" % drink[1])>21):
