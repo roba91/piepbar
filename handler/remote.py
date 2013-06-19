@@ -48,7 +48,7 @@ def buy(user, *products):
 	try_sync = True
 	while True:
 		try:
-			r = requests.post(URL_BUY, data=json.dumps(payload), headers=headers, auth=(AUTH_USER, AUTH_PASSWORD))
+			r = requests.put(URL_BUY, data=json.dumps(payload), headers=headers, auth=(AUTH_USER, AUTH_PASSWORD))
 			if r.status_code == 200:
 				debug("remote:buy", "...everything worked fine")
 				return True
