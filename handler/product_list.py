@@ -3,6 +3,7 @@
 
 import threading
 from remote import get_products
+from config import debug
 
 
 class ProductList():
