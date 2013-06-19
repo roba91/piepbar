@@ -17,6 +17,7 @@ def get_products():
 	try:
 		r = requests.get(URL_SYNC, auth=(AUTH_USER, AUTH_PASSWORD))
 		data = decode_product_list(r.json())
+		# print str(data).replace("),", "),\n")
 		return data
 	except Exception:
 		return {}
