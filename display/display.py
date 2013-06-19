@@ -111,20 +111,29 @@ class Display(object):
 
 		if name:
 			draw.rectangle([0,0,159,13],fill=255)
-			draw.text((1,1),name,font=self._bold_font)
+			if len(name) > 22:
+				draw.text((1,1),name[:19] + "...",font=self._bold_font)
+			else:
+				draw.text((1,1),name,font=self._bold_font)
+
 
 		if drinks:
 			draw.rectangle([0,17,159,65],fill=255)
 
 			y = 53
-			for drink in drinks[:-5:-1]:
-				# TODO: trim drink name
-				if len(drinks)>4 and drink == drinks[-4]:
+			for i,drink in enumerate(drinks[:-5:-1]):
+				# TODO: trimming still not perfect
+				if len(drinks)>4 and i == 3:
 					draw.text((1,17),"und noch %s mehr..." % (len(drinks)-3),font=self._font)
 				else:
+					if(len(drink[0]+"%s" % drink[1])>21):
+						drink_name = drink[0][:(18 - len("%s" % drink[1]))] + "..."
+					else:
+						drink_name = drink[0]
+
 					size = self._font.getsize("%.2f" % drink[1])
 					draw.text((156-size[0],y),"%.2f" % drink[1],font=self._font)
-					draw.text((1,y),drink[0],font=self._font)
+					draw.text((1,y),drink_name,font=self._font)
 				y=y-12
 
 		size = self._font.getsize("Summe: %.2f" % total)
