@@ -120,7 +120,7 @@ def user_code(scanned_user):
 	global user
 	stop_timer()
 	PRODUCT_LIST.idle.clear()
-	debug("actions:user_code", "scanned user: %s" % user)
+	debug("actions:user_code", "scanned user: %s" % scanned_user)
 	if user and user != scanned_user:
 		beep()
 		LCD.message(**MSG_FUNC_USER_CHANGE(scanned_user))

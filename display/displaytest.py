@@ -7,7 +7,7 @@ from PIL import Image
 import cProfile
 
 dc = DisplayDriver("/dev/pidisplay",76800)
-im = Image.open("test.png")
+im = Image.open("data/test.png")
 cProfile.run("dc.send_image(im)")
 
 

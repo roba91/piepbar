@@ -1,22 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from os import path
 import sys
 import time
 import Image, ImageDraw, ImageFont, ImageChops
 from displaydriver import DisplayDriver
 from config import *
-
-
-IDLE_PATH = path.join(path.dirname(path.realpath(__file__)), 'idle_bg.png')
-MAIN_PATH = path.join(path.dirname(path.realpath(__file__)), 'main_bg.png')
-
-FONT_PATH = path.join(path.dirname(path.realpath(__file__)), 'Terminus.ttf')
-BOLD_PATH = path.join(path.dirname(path.realpath(__file__)), 'TerminusBold.ttf')
-DITHER_PATH = path.join(path.dirname(path.realpath(__file__)), 'dither_mask.png')
-
-DUMMY_DISPLAY = True # Set to false to use the real hardware
 
 class Display(object):
 
