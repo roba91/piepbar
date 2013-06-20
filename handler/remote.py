@@ -44,6 +44,7 @@ def buy(user, *products):
 	# HTTP-422 -> scanned user is not allowed to buy stuff
 	# HTTP-otherwise -> something went wrong, retry
 	debug("remote:buy", "init buy sequence")
+	try_sync = True
 	while True:
 		try:
 			r = requests.post(URL_BUY, data=json.dumps(payload), headers=headers, auth=(AUTH_USER, AUTH_PASSWORD))
@@ -51,11 +52,18 @@ def buy(user, *products):
 				debug("remote:buy", "...everything worked fine")
 				return True
 			elif r.status_code == 422:
-				debug("remote:buy", "...did not work (user or product unknown by FSIntra")
-				return False
+				# sync
+				if not try_sync:
+					debug("remote:buy", "...did not work (user or product unknown by FSIntra)")
+					return False
+				else:
+					debug("remote:buy", "...did not work (user or product unknown by FSIntra) -> syncing")
+					try_sync = True
+					from product_list import PRODUCT_LIST
+					PRODUCT_LIST.update()
 			else:
 				# something went terribly wrong, retry
-				debug("remote:buy", "...worked perfectly fine")
+				debug("remote:buy", "...worked perfectly wrong")
 				LCD.message_on(**MSG_BUY_RETRY)
 				time.sleep(MSG_BUY_RETRY_WAIT)
 		except requests.ConnectionError:
