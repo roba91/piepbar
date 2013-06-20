@@ -33,7 +33,7 @@ def encode_buy(products):
 
 def decode_product_list(json_data):
 	# convert json_data to {data: (name, price)} dict
-	return {int(e['beverage']['id']): (str(e['beverage']['name']), float(e['beverage']['price'])) for e in json_data}
+	return {int(e['beverage']['id']): (e['beverage']['name'], float(e['beverage']['price'])) for e in json_data}
 
 
 ########################### interaction settings ###########################
@@ -59,10 +59,10 @@ MSG_SYNC_FAILED = {'heading': 'Sync failed', 'text': 'Irgendwas ist schief\ngela
 ################################### beep ###################################
 
 def beep():
-    print '\a'
+	print '\a'
 
 
 ################################### debug ##################################
 
 def debug(src, msg):
-    print "[%s] %s" % (src, msg)
+	print "[%s] %s" % (src, msg)

@@ -16,9 +16,10 @@ def get_products():
 	"""
 	try:
 		r = requests.get(URL_SYNC, auth=(AUTH_USER, AUTH_PASSWORD))
-		data = decode_product_list(r.json())
-		# print str(data).replace("),", "),\n")
-		debug("remote:get_products", "successfully read data")
+		json_data = r.json()
+		debug("remote:get_products", "successfully read json data")
+		data = decode_product_list(json_data)
+		debug("remote:get_products", "successfully decoded json data")
 		return data
 	except Exception, e:
 		debug("remote:get_products", "fetching failed; %s: %s" % (type(e).__name__, e))
