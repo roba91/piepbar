@@ -1,0 +1,101 @@
+Cmp-Mod V01 Created by CvPcb (2013-may-18)-stable date = Sun 14 Jul 2013 01:42:02 AM CEST
+
+BeginCmp
+TimeStamp = /51E1D30F;
+Reference = C1;
+ValeurCmp = 4.7uF;
+IdModule  = c_elec_4x4.5;
+EndCmp
+
+BeginCmp
+TimeStamp = /51E1DB84;
+Reference = C2;
+ValeurCmp = 100nF;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /51E1D035;
+Reference = C3;
+ValeurCmp = 3.3nF;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /51E1D7FF;
+Reference = D1;
+ValeurCmp = LED;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /51E1D780;
+Reference = D2;
+ValeurCmp = BAS21;
+IdModule  = sod323;
+EndCmp
+
+BeginCmp
+TimeStamp = /51E1CFD8;
+Reference = D3;
+ValeurCmp = BAS21;
+IdModule  = sod323;
+EndCmp
+
+BeginCmp
+TimeStamp = /51E1D1CF;
+Reference = K1;
+ValeurCmp = CONN_3;
+IdModule  = PIN_ARRAY_3X1;
+EndCmp
+
+BeginCmp
+TimeStamp = /51E1D01D;
+Reference = L1;
+ValeurCmp = 220uH;
+IdModule  = inductor_smd_4.8x2.8mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /51E1D10F;
+Reference = P1;
+ValeurCmp = CONN_2;
+IdModule  = PIN_ARRAY_2X1;
+EndCmp
+
+BeginCmp
+TimeStamp = /51E1D73F;
+Reference = R1;
+ValeurCmp = 1k;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /51E1D48D;
+Reference = R2;
+ValeurCmp = 10k;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /51E1CF57;
+Reference = R3;
+ValeurCmp = 560k;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /51E1CF66;
+Reference = R4;
+ValeurCmp = 2m;
+IdModule  = SM0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /51E1CF2B;
+Reference = U1;
+ValeurCmp = HV857MG;
+IdModule  = MSOP_8;
+EndCmp
+
+EndListe

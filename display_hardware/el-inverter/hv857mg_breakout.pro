@@ -1,11 +1,6 @@
-update=Sun 14 Jul 2013 12:05:02 AM CEST
+update=Sun 14 Jul 2013 01:53:07 AM CEST
 version=1
 last_client=eeschema
-[cvpcb]
-version=1
-NetIExt=net
-[cvpcb/libraries]
-EquName1=devcms
 [pcbnew]
 version=1
 LastNetListRead=
@@ -26,7 +21,6 @@ DrawSegmentWidth=0.200000000000
 BoardOutlineThickness=0.100000000000
 ModuleOutlineThickness=0.150000000000
 [pcbnew/libraries]
-LibDir=
 LibName1=sockets
 LibName2=connect
 LibName3=discret
@@ -43,11 +37,19 @@ LibName13=led
 LibName14=dip_sockets
 LibName15=pga_sockets
 LibName16=valves
+LibName17=w_smd_diode
+LibName18=w_smd_inductors
+LibDir=lib;lib/smisioto.no-ip.org
 [general]
 version=1
+[cvpcb]
+version=1
+NetIExt=net
+[cvpcb/libraries]
+EquName1=devcms
 [eeschema]
 version=1
-LibDir=
+LibDir=lib
 NetFmtName=
 RptD_X=0
 RptD_Y=100

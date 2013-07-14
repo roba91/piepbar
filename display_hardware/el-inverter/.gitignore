@@ -1,2 +1,5 @@
 # Ignore backup files
 *.bak
+*.kicad_pcb-bak
+# Me wants all the libs !
+!lib
