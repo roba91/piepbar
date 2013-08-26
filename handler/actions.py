@@ -184,7 +184,7 @@ def handle_input(code):
 	elif code.startswith(CODE_PREFIX_PRODUCT):
 		product_code(code.replace(CODE_PREFIX_PRODUCT, "", 1))
 	else:
-		logging.error("unknown command")
+		logger.error("unknown command")
 		beep()
 		LCD.message(**MSG_UNKOWN_CODE)
 

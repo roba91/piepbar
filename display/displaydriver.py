@@ -42,7 +42,7 @@ class DisplayDriver(object):
 			while not self._ser.read() == resp:
 				self._ser.write(req)
 
-			self.logger.debug("[DisplayDriver] Request was acked")
+			self.logger.debug("Request was acked")
 
 			self._ser.write(paket)
 
@@ -54,7 +54,7 @@ class DisplayDriver(object):
 
 			success = (byte == ack)
 
-		self.logger.debug("[DisplayDriver] Data was acked")
+		self.logger.debug("Data was acked")
 
 
 	def _pixel_to_byte(self,pixels,x,y):
