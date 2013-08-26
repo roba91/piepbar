@@ -2,18 +2,24 @@
 # -*- coding: utf-8 -*-
 
 import serial
+import logging
 from time import sleep
 from crcmod.predefined import mkCrcFun
+
 
 class DisplayDriver(object):
 	
 	def __init__(self, port="/dev/pidisplay", baudrate=76800, dummy=False):
 		self._dummy = dummy
+
+		self.logger = logging.getLogger("DisplayDriver")
 		
 		if not dummy :
 			self._ser = serial.Serial(port, baudrate, timeout=0.100)
 			if not self._ser:
+				self.logger.critical("Unable to open %s with %d baud" % (port, baudrate))
 				raise ValueError("Unable to open %s with %d baud" % (port, baudrate))
+
 
 			self._crc16 = mkCrcFun('crc16')
 
@@ -36,7 +42,7 @@ class DisplayDriver(object):
 			while not self._ser.read() == resp:
 				self._ser.write(req)
 
-			print "[DisplayDriver] Request was acked"
+			self.logger.debug("[DisplayDriver] Request was acked")
 
 			self._ser.write(paket)
 
@@ -48,7 +54,7 @@ class DisplayDriver(object):
 
 			success = (byte == ack)
 
-		print "[DisplayDriver] Data was acked"
+		self.logger.debug("[DisplayDriver] Data was acked")
 
 
 	def _pixel_to_byte(self,pixels,x,y):

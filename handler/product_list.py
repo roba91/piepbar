@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import threading
+import logging
 from remote import get_products
-from config import debug
 
 
 class ProductList():
@@ -14,19 +14,20 @@ class ProductList():
 		self.update()
 
 	def update(self):
+		logger = logging.getLogger("product_list:update")
 		"""
 		Tries to update the ProductList.
 		Returns True on success, False otherwise.
 		"""
-		debug("product_list:update", "fetching data")
+		logger.info("fetching data")
 		new_values = get_products()
 		self.idle.wait()
 		if new_values:
 			self.data = new_values
-			debug("product_list:update", "fetching done")
+			logger.info("fetching done")
 			return True
 		else:
-			debug("product_list:update", "fetching failed")
+			logger.error("fetching failed")
 			return False
 
 	def get_name(self, obj_id):

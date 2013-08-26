@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
+
 from collections import Counter
 from display import Display, DEFAULT_MESSAGE_DELAY
 
@@ -36,6 +38,13 @@ def decode_product_list(json_data):
 	return {int(e['beverage']['id']): (e['beverage']['name'], float(e['beverage']['price'])) for e in json_data}
 
 
+############################# logging settings #############################
+
+LOG_FILE = "piepbar.log"
+LOG_LEVEL = logging.DEBUG
+LOG_FORMAT = '%(asctime)s %(levelname)s [%(name)s] %(message)s'
+LOG_DATEFORMAT = '%d-%m-%Y %H:%M:%S'
+
 ########################### interaction settings ###########################
 
 MSG_UNKOWN_CODE = {'heading': 'Lern2Play', 'text': 'Nope, den Code gibts\n nicht. Echt nicht!'}
@@ -60,9 +69,3 @@ MSG_SYNC_FAILED = {'heading': 'Sync failed', 'text': 'Irgendwas ist schief\ngela
 
 def beep():
 	print '\a'
-
-
-################################### debug ##################################
-
-def debug(src, msg):
-	print "[%s] %s" % (src, msg)

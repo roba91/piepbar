@@ -2,8 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import logging
+
 from handler import auto_update, scanner
 from display import *
+from handler.config import *
 
 
 def main(*cmd_args):
@@ -20,6 +23,8 @@ def main(*cmd_args):
 	#lcd.idle()
 	#lcd.update(name = "Horst")
 
+	logging.basicConfig(filename=LOG_FILE,level=LOG_LEVEL, format=LOG_FORMAT, datefmt=LOG_DATEFORMAT)
+	
 	auto_update()
 	scanner()
 

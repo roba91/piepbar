@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+import logging
 import json
 import requests
 from config import *
@@ -14,15 +15,16 @@ def get_products():
 	are tuples of names and prices - {obj_id: (name, price)}, obj_id: int,
 	name: String, price: ??.
 	"""
+	logger = logging.getLogger("remote:get_products")
 	try:
 		r = requests.get(URL_SYNC, auth=(AUTH_USER, AUTH_PASSWORD))
 		json_data = r.json()
-		debug("remote:get_products", "successfully read json data")
+		logger.info("successfully read json data")
 		data = decode_product_list(json_data)
-		debug("remote:get_products", "successfully decoded json data")
+		logger.info("successfully decoded json data")
 		return data
 	except Exception, e:
-		debug("remote:get_products", "fetching failed; %s: %s" % (type(e).__name__, e))
+		logger.error("fetching failed; %s: %s" % (type(e).__name__, e))
 		return {}
 
 
@@ -38,36 +40,37 @@ def buy(user, *products):
 	if the given user is not allowed to purchase things or a products
 	is unknown, False is returned.
 	"""
+	logger = logging.getLogger("remote:buy")
 	beverages = encode_buy(products)
 	payload = {'buy': {'beverages': beverages, 'user': user}}
 	headers = {'content-type': 'application/json'}
 	# HTTP-200 -> ok
 	# HTTP-422 -> scanned user is not allowed to buy stuff
 	# HTTP-otherwise -> something went wrong, retry
-	debug("remote:buy", "init buy sequence")
+	logger.info("init buy sequence")
 	try_sync = True
 	while True:
 		try:
 			r = requests.put(URL_BUY, data=json.dumps(payload), headers=headers, auth=(AUTH_USER, AUTH_PASSWORD))
 			if r.status_code == 200:
-				debug("remote:buy", "...everything worked fine")
+				logger.info("...everything worked fine")
 				return True
 			elif r.status_code == 422:
 				# sync
 				if not try_sync:
-					debug("remote:buy", "...did not work (user or product unknown by FSIntra)")
+					logger.critical("...did not work (user or product unknown by FSIntra)")
 					return False
 				else:
-					debug("remote:buy", "...did not work (user or product unknown by FSIntra) -> syncing")
+					logger.error("...did not work (user or product unknown by FSIntra) -> syncing")
 					try_sync = True
 					from product_list import PRODUCT_LIST
 					PRODUCT_LIST.update()
 			else:
 				# something went terribly wrong, retry
-				debug("remote:buy", "...worked perfectly wrong")
+				logger.critical("...worked perfectly wrong")
 				LCD.message_on(**MSG_BUY_RETRY)
 				time.sleep(MSG_BUY_RETRY_WAIT)
 		except requests.ConnectionError:
-			debug("remote:buy", "connection refused. Are you online")
+			logger.critical("connection refused. Are you online")
 			LCD.message_on(**MSG_BUY_RETRY)
 			time.sleep(MSG_BUY_RETRY_WAIT)

@@ -3,6 +3,7 @@
 
 import sys
 import time
+import logging
 import Image, ImageDraw, ImageFont, ImageChops
 from displaydriver import DisplayDriver
 from config import *
@@ -12,14 +13,16 @@ class Display(object):
 	def __init__(self, idle_bg=IDLE_PATH, main_bg=MAIN_PATH, font=FONT_PATH,
 				 font_size=14, bold_font=BOLD_PATH, bold_font_size=14):
 
+		self.logger = logging.getLogger("display")
+
 		try:
 			self._dither = Image.open(DITHER_PATH)
 		except:
-			print"Error opening dither mask!"
+			self.logger.critical("Can't open dither mask!")
 			sys.exit()
 
 		if not self._dither.size == (160,80):
-			print"Error: Wrong image size %s" % self._dither.size
+			self.logger.critical("Wrong image size %s" % self._dither.size)
 			sys.exit()
 
 		self._dither = self._dither.convert('1')
@@ -28,11 +31,11 @@ class Display(object):
 			try:
 				self._main_bg = Image.open(main_bg)
 			except:
-				print"Error opening image file!"
+				self.logger.critical("can't open image file!")
 				sys.exit()
 
 			if not self._main_bg.size == (160,80):
-				print"Error: Wrong image size %s" % self._main_bg.size
+				self.logger.critical("Wrong image size %s" % self._main_bg.size)
 				sys.exit()
 
 			self._main_bg = self._main_bg.convert('1')
@@ -43,11 +46,11 @@ class Display(object):
 			try:
 				self._idle_bg = Image.open(idle_bg)
 			except:
-				print"Error opening image file!"
+				self.citical("Can't open image file!")
 				sys.exit()
 
 			if not self._idle_bg.size == (160,80):
-				print"Error: Wrong image size %s" % self._idle_bg.size
+				self.citical("Wrong image size %s" % self._idle_bg.size)
 				sys.exit()
 
 			self._idle_bg = self._idle_bg.convert('1')
@@ -58,20 +61,20 @@ class Display(object):
 			try:
 				self._font = ImageFont.truetype(font, font_size)
 			except:
-				print"Error: loading font!"
+				self.citical("Can't load font!")
 				sys.exit()
 
 		if bold_font:
 			try:
 				self._bold_font = ImageFont.truetype(bold_font, bold_font_size)
 			except:
-				print"Error: loading bold font!"
+				self.logger.critical("Can't load bold font!")
 				sys.exit()
 		
 		try:
 			self._displaydriver = DisplayDriver(dummy=DUMMY_DISPLAY)
 		except:
-			print "Error: Unable to open display!"
+			self.logger.critical("Unable to open display!")
 			sys.exit()
 
 		self._screen = self._idle_bg.copy()
@@ -166,7 +169,7 @@ class Display(object):
 			elif align=='left':
 				draw.text((boxsize[0][0]+3,ypos),heading,font=self._bold_font)
 			else:
-				print "ERROR: Unknown alignment \'%s\'" % align
+				self.logger.error("Unknown alignment \'%s\'" % align)
 			ypos += sizes.pop(0)[1]
 
 		for i in range(len(lines)):
@@ -175,7 +178,7 @@ class Display(object):
 			elif align=='left':
 				draw.text((boxsize[0][0]+3,ypos),lines[i],font=self._font)
 			else:
-				print "ERROR: Unknown alignment \'%s\'" % align
+				self.logger.error("Unknown alignment \'%s\'" % align)
 			ypos += sizes[i][1]
 		
 		self._viewmsg = True

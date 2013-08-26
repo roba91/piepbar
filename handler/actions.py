@@ -4,6 +4,7 @@
 import time
 import sys
 import threading
+import logging
 from product_list import PRODUCT_LIST
 from config import *
 from remote import buy
@@ -18,51 +19,62 @@ def shutdown():
 	sys.exit()
 
 def sync():
-	debug("actions:sync", "syncing...")
+	logger = logging.getLogger("actions:sync")
+	logger.info("syncing...")
 	LCD.message_on(**MSG_SYNC_ON)
 	success = PRODUCT_LIST.update()
 	time.sleep(MSG_SYNC_DELAY)
-	debug("actions:sync", "sync %s" % "successful" if success else "failed")
-	if success: LCD.message(**MSG_SYNC_SUCCESS)
-	else: LCD.message(**MSG_SYNC_FAILED)
+	if success:
+		LCD.message(**MSG_SYNC_SUCCESS)
+		logger.info("sync successful")
+	else:
+		LCD.message(**MSG_SYNC_FAILED)
+		logger.error("sync failed")
 
 def auto_sync():
-	debug("actions:auto_sync", "cowardly syncing...")
+	logger = logging.getLogger("actions:auto_sync")
+	logger.info("cowardly syncing...")
 	# this is harpooning automagically during idle time - do not display anything
 	PRODUCT_LIST.update()
 
 ############################### finish purchase ###############################
 def accept():
+	logger = logging.getLogger("actions:accept")
 	stop_timer()
 	if not user:
-		debug("actions:accept", "no user specified")
+		logger.info("no user specified")
 		beep()
 		LCD.message(**MSG_ACCEPT_NO_USER)
 	elif not products:
-		debug("actions:accept", "no products specified")
+		logger.info("no products specified")
 		beep()
 		LCD.message(**MSG_ACCEPT_NO_PRODUCTS)
 	else:
-		debug("actions:accept", "buying...")
+		logger.info("buying...")
 		# message_on() and reset() redraw the screen -> MSG_BUY_ON shown twice
 		LCD.message_on(**MSG_BUY_ON(user))
 		success = buy(user, *products)
-		debug("actions:accept", "buying %s" % "successful" if success else "failed")
-		if not success:
+
+		if success:
+			logger.info("buying successful")
+		else:
+			logger.error("buying failed")
 			# display error message -> nothing purchased
 			LCD.message_on(**MSG_BUY_FAILED)
 		reset()
 		LCD.message_off(**MSG_BUY_OFF)
 
 def decline():
-	debug("actions:decline", "decline")
+	logger = logging.getLogger("actions:decline")
+	logger.info("decline")
 	stop_timer()
 	beep()
 	LCD.message(**MSG_DECLINE)
 	reset()
 
 def undo_last_selection():
-	debug("actions:undo_last_selection", "undoing")
+	logger = logging.getLogger("actions:undo_last_selection")
+	logger.info("undoing")
 	global products
 	stop_timer()
 	products = products[:-1]
@@ -71,22 +83,24 @@ def undo_last_selection():
 
 
 def timeout():
-	debug("actions:timeout", "timeouted...")
+	logger = logging.getLogger("actions:timeout")
+	logger.warning("actions:timeout", "timeouted...")
 	# accept as purchase
 	if not user and not products:
 		# the purchase was already handled -> should happen rarely
-		debug("actions:decline", "...doing nothing")
+		logger.warning("actions:decline", "...doing nothing")
 		pass
 	elif not user or not products:
 		# no valid purchase -> decline
-		debug("actions:decline", "...declining")
+		logger.warning("actions:decline", "...declining")
 		decline()
 	else:
-		debug("actions:decline", "...accepting")
+		logging.warning("actions:decline", "...accepting")
 		accept()
 
 def reset():
-	debug("actions:reset", "resetting $stuff")
+	logger = logging.getLogger("actions:reset")
+	logger.info("actions:reset", "resetting $stuff")
 	global user, products
 	stop_timer()
 	products = []
@@ -108,19 +122,21 @@ def stop_timer():
 		timer.cancel()
 
 def update_display():
-	debug("actions:update_display", "updating with...")
+	logger = logging.getLogger("actions:update_display")
+	logger.info("updating with...")
 	drinks = [(PRODUCT_LIST.get_name(pid), PRODUCT_LIST.get_price(pid)) for pid in products]
-	debug("actions:update_display", "...drinks: %s" % str(drinks))
+	logger.info("...drinks: %s" % str(drinks))
 	total = sum([PRODUCT_LIST.get_price(pid) for pid in products])
-	debug("actions:update_display", "...total: %.2f" % total)
+	logger.info("...total: %.2f" % total)
 	LCD.update(user, drinks, total)
 
 def user_code(scanned_user):
+	logger = logging.getLogger("actions:user_code")
 	# if the user is allowed to buy things is checked by the intranet
 	global user
 	stop_timer()
 	PRODUCT_LIST.idle.clear()
-	debug("actions:user_code", "scanned user: %s" % scanned_user)
+	logger.info("scanned user: %s" % scanned_user)
 	if user and user != scanned_user:
 		beep()
 		LCD.message(**MSG_FUNC_USER_CHANGE(scanned_user))
@@ -129,22 +145,23 @@ def user_code(scanned_user):
 	update_display()
 
 def product_code(product_id):
+	logger = logging.getLogger("actions:product_code")
 	global products
 	stop_timer()
 	PRODUCT_LIST.idle.clear()
-	debug("actions:product_code", "scanned product: %s" % product_id)
+	logger.info("scanned product: %s" % product_id)
 	try:
 		# don't let fools run the system into malicious states -> check cast
 		product_id = int(product_id)
 	except ValueError:
 		product_id = None
-		debug("actions:product_code", "product code invalid (no int)")
+		logger.critical("product code invalid (no int)")
 	if not product_id or not PRODUCT_LIST.contains(product_id):
-		debug("actions:product_code", "product code unknown")
+		logger.error("product code unknown")
 		LCD.message(**MSG_UNKNOWN_PRODUCT)
 	else:
 		products.append(product_id)
-		debug("actions:product_code", "product accepted, new list: %s" % str(products))
+		logger.info("product accepted, new list: %s" % str(products))
 		start_timer()
 		update_display()
 
@@ -158,6 +175,8 @@ ACTIONS = {
 }
 
 def handle_input(code):
+	logger = logging.getLogger("actions:handle_input")
+	logger.debug("Scanned code: %s" % code)
 	if code in ACTIONS:
 		ACTIONS[code]()
 	elif code.startswith(CODE_PREFIX_USER):
@@ -165,7 +184,7 @@ def handle_input(code):
 	elif code.startswith(CODE_PREFIX_PRODUCT):
 		product_code(code.replace(CODE_PREFIX_PRODUCT, "", 1))
 	else:
-		debug("actions:handle_input", "unknown command")
+		logging.error("unknown command")
 		beep()
 		LCD.message(**MSG_UNKOWN_CODE)
 
