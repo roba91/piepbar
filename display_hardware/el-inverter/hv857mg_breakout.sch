@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sun 14 Jul 2013 10:24:55 PM CEST
+EESchema Schematic File Version 2
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -31,7 +31,7 @@ LIBS:contrib
 LIBS:valves
 LIBS:hv857mg
 LIBS:hv857mg_breakout-cache
-EELAYER 24 0
+EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
