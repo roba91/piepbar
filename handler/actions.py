@@ -100,7 +100,7 @@ def timeout():
 
 def reset():
 	logger = logging.getLogger("actions:reset")
-	logger.info("actions:reset", "resetting $stuff")
+	logger.info("resetting $stuff")
 	global user, products
 	stop_timer()
 	products = []

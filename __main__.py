@@ -24,10 +24,12 @@ def main(*cmd_args):
 	#lcd.update(name = "Horst")
 
 	logging.basicConfig(filename=LOG_FILE,level=LOG_LEVEL, format=LOG_FORMAT, datefmt=LOG_DATEFORMAT)
+	logger = logger = logging.getLogger("main")
 	
+	logger.info("System started")
 	auto_update()
 	scanner()
-
+	logger.info("System shutting down")
 
 if __name__ == '__main__':
 	main(*sys.argv[1:])
