@@ -84,18 +84,18 @@ def undo_last_selection():
 
 def timeout():
 	logger = logging.getLogger("actions:timeout")
-	logger.warning("actions:timeout", "timeouted...")
+	logger.warning("timeouted...")
 	# accept as purchase
 	if not user and not products:
 		# the purchase was already handled -> should happen rarely
-		logger.warning("actions:decline", "...doing nothing")
+		logger.warning("...doing nothing")
 		pass
 	elif not user or not products:
 		# no valid purchase -> decline
-		logger.warning("actions:decline", "...declining")
+		logger.warning("...declining")
 		decline()
 	else:
-		logging.warning("actions:decline", "...accepting")
+		logging.warning("...accepting")
 		accept()
 
 def reset():
