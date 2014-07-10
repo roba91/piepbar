@@ -42,7 +42,7 @@ class DisplayDriver(object):
 			while not self._ser.read() == resp:
 				self._ser.write(req)
 
-			self.logger.debug("Request was acked")
+			self.logger.debug("Request was acked %s" % hex(ord(resp)))
 
 			self._ser.write(paket)
 
@@ -50,6 +50,11 @@ class DisplayDriver(object):
 			retries = 0
 			while byte != ack and retries < 5:
 				byte = self._ser.read()
+				if byte != ack:
+					if  byte:
+						self.logger.debug("Retry %d: Got %s instead of ack" % (retries, hex(ord(byte))))
+					else:
+						self.logger.debug("Retry %d: Got timeout instead of ack" % retries)
 				retries = retries + 1
 
 			success = (byte == ack)

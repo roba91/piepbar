@@ -4,7 +4,7 @@
 import sys
 import time
 import logging
-import Image, ImageDraw, ImageFont, ImageChops
+from PIL import Image, ImageDraw, ImageFont, ImageChops
 from displaydriver import DisplayDriver
 from config import *
 
