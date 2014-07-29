@@ -13,13 +13,13 @@ def get_avatar(user):
 	return join(dirname(__file__), 'data/avatars', user+'.png')
 
 def get_drink(name):
-	return join(dirname(__file__), 'data/drinks', name+'.jpg')
+	return join(dirname(__file__), 'data/drinks', name+'.png')
 
 IDLE_PATH = get_data_path('idle_bg.png')
 MAIN_PATH = get_data_path('main_bg.png')
 MESSAGE_PATH = get_data_path('message.png')
 NOAVATAR_PATH = get_avatar('default')
-NODRINK_PATH = get_avatar('default')
+NODRINK_PATH = get_drink('default')
 
 FONT_PATH = get_data_path('RopaSans-Regular.ttf')
 BOLD_PATH = get_data_path('TerminusBold.ttf')
