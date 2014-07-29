@@ -4,14 +4,12 @@
 import logging
 
 from collections import Counter
-from display import Display, DEFAULT_MESSAGE_DELAY
-
-LCD = Display()
 
 DEBUG = True
 
 DEFAULT_AUTO_UPDATE_PERIOD = 120.0 # in seconds
 FINISH_TIMEOUT = 25.0 # in seconds
+DEFAULT_MESSAGE_DELAY = 3
 
 CODE_FORCE_EXIT = '__exit' # TODO: use more save code?
 CODE_FORCE_SYNC = '__sync' # TODO: use more save code?
