@@ -4,6 +4,7 @@
 import sys
 import time
 import logging
+import threading
 from config import *
 from textrect import *
 
@@ -48,7 +49,12 @@ class Gui(object):
 		self._main_bg = pygame.transform.scale(self._main_bg, (self._res_x, self._res_y))
 		self._main_surface = self._main_bg.copy()
 
+		self._timer = None
+		self._movie_timer = None
+		self._movie = pygame.movie.Movie(get_random_movie())
+
 		self._viewmsg = False
+		self._idle = True
 
 	def _draw(self):
 		self._screen.blit(self._main_surface, (0, 0))
@@ -85,11 +91,50 @@ class Gui(object):
 
 		return pygame.transform.scale(img, (int(sx),int(sy)))
 
+	def _play_idle_video(self):
+		try:
+			self._movie = pygame.movie.Movie(get_random_movie())
+		except:
+			self.idle()
+			return
+
+		self._movie.play()
+
+		if self._movie_timer:
+			self._movie_timer.cancel()
+		self._movie_timer = threading.Timer(self._movie.get_length(), self.unidle)
+		self._movie_timer.setDaemon(True)
+		self._movie_timer.start()
+
+
 	def idle(self):
+		self._idle = True
+		if self._timer:
+			self._timer.cancel()
+		self._timer = threading.Timer(IDLE_VIDEO_TIMEOUT, self._play_idle_video)
+		self._timer.setDaemon(True)
+		self._timer.start()
+
 		self._main_surface.blit(self._idle_surface, (0,0))
 		self._draw()
 
+	def unidle(self):
+		if self._idle:
+			if self._timer:
+				self._timer.cancel()
+			if self._movie_timer:
+				self._movie_timer.cancel()
+			self._movie.stop()
+			self.idle()
+
 	def update(self, name=None, drinks=None, total=0, bill=(0,0)):
+		self._idle = False
+
+		if self._timer:
+			self._timer.cancel()
+		if self._movie_timer:
+			self._movie_timer.cancel()
+		self._movie.stop()
 		self._main_surface = self._main_bg.copy()
 
 		if name:
