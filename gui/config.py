@@ -8,6 +8,8 @@ import random
 
 
 ############################## display settings ###############################
+files = []
+
 def get_data_path(file_name):
 	return join(dirname(__file__), 'data', file_name)
 
@@ -18,8 +20,11 @@ def get_drink(name):
 	return join(dirname(__file__), 'data/drinks', name+'.png')
 
 def get_random_movie():
-	files = [k for k in listdir(join(dirname(__file__), 'data/movies')) if k.endswith('.mpg')]
-	return join(dirname(__file__), 'data/movies', random.choice(files))
+	global files
+	if not files:
+		files = [k for k in listdir(join(dirname(__file__), 'data/movies')) if k.endswith('.mpg')]
+		random.shuffle(files)
+	return join(dirname(__file__), 'data/movies', files.pop())
 
 IDLE_PATH = get_data_path('idle_bg.png')
 MAIN_PATH = get_data_path('main_bg.png')
