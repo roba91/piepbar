@@ -22,8 +22,11 @@ CODE_UNDO = '__undo' # undo last item selection
 CODE_PREFIX_USER = 'user__'
 CODE_PREFIX_PRODUCT = 'item__'
 
-URL_SYNC = 'http://localhost:3000/api/items.json'
-URL_BUY = 'http://localhost:3000/api/buy'
+URL_BASE = ''
+URL_SYNC = URL_BASE + 'api/items.json'
+URL_BUY = URL_BASE + 'api/buy'
+URL_USER = URL_BASE + 'api/user'
+
 AUTH_USER = 'user'
 AUTH_PASSWORD = 'password'
 
@@ -33,7 +36,7 @@ def encode_buy(products):
 
 def decode_product_list(json_data):
 	# convert json_data to {data: (name, price)} dict
-	return {int(e['beverage']['id']): (e['beverage']['name'], float(e['beverage']['price'])) for e in json_data}
+	return {int(e['id']): (e['name'], float(e['price']), URL_BASE + e['image_url']) for e in json_data}
 
 
 ############################# logging settings #############################

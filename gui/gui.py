@@ -8,6 +8,9 @@ import threading
 from config import *
 from textrect import *
 
+from urllib2 import urlopen
+from cStringIO import StringIO
+
 import pygame
 from pygame.locals import *
 
@@ -52,6 +55,14 @@ class Gui(object):
 		self._timer = None
 		self._movie_timer = None
 		self._movie = pygame.movie.Movie(get_random_movie())
+
+		self._avatar_surf = pygame.image.load(NOAVATAR_PATH)
+		self._avatar_surf.convert()
+		self._avatar_surf = self._aspect_scale(self._avatar_surf, (self._x_unit*1.9, self._x_unit*1.9))
+
+		self._drink_img_surf = pygame.image.load(NODRINK_PATH)
+		self._drink_img_surf.convert()
+		self._drink_img_surf = self._aspect_scale(self._avatar_surf, (self._x_unit*1.9, self._x_unit*1.9))
 
 		self._viewmsg = False
 		self._idle = True
@@ -102,7 +113,7 @@ class Gui(object):
 
 		if self._movie_timer:
 			self._movie_timer.cancel()
-		self._movie_timer = threading.Timer(self._movie.get_length(), self.unidle)
+		self._movie_timer = threading.Timer(self._movie.get_length(), self.idle)
 		self._movie_timer.setDaemon(True)
 		self._movie_timer.start()
 
@@ -119,13 +130,33 @@ class Gui(object):
 		self._draw()
 
 	def unidle(self):
-		if self._idle:
+		if self._idle and self._movie.get_busy():
 			if self._timer:
 				self._timer.cancel()
 			if self._movie_timer:
 				self._movie_timer.cancel()
 			self._movie.stop()
 			self.idle()
+
+	def set_user_avatar(self, url):
+		try:
+			img = urlopen(url);
+			self._avatar_surf = pygame.image.load(StringIO(img.read()))
+		except:
+			self._avatar_surf = pygame.image.load(NOAVATAR_PATH)
+
+		self._avatar_surf.convert()
+		self._avatar_surf = self._aspect_scale(self._avatar_surf, (self._x_unit*1.9, self._x_unit*1.9))
+
+	def set_drink_image(self, url):
+		try:
+			img = urlopen(url);
+			self._drink_img_surf = pygame.image.load(StringIO(img.read()))
+		except:
+			self._drink_img_surf = pygame.image.load(NODRINK_PATH)
+
+		self._drink_img_surf.convert()
+		self._drink_img_surf = self._aspect_scale(self._drink_img_surf, (self._x_unit*1.9, self._x_unit*1.9))
 
 	def update(self, name=None, drinks=None, total=0, bill=(0,0)):
 		self._idle = False
@@ -140,19 +171,8 @@ class Gui(object):
 		if name:
 			name_surf = self._font.render(name, True, self._text_fg_color)
 			name_surf = self._aspect_scale(name_surf, (self._x_unit*8, self._y_unit*2))
-			try:
-				avatar_surf = pygame.image.load(get_avatar(name))
-			except:
-				try:
-					avatar_surf = pygame.image.load(NOAVATAR_PATH)
-				except:
-					self.logger.critical("Could not load default avatar")
-					sys.exit()
 
-			avatar_surf.convert()
-			avatar_surf = self._aspect_scale(avatar_surf, (self._x_unit*1.9, self._x_unit*1.9))
-
-			self._main_surface.blit(avatar_surf, (0,0))
+			self._main_surface.blit(self._avatar_surf, (0,0))
 			self._main_surface.blit(name_surf, (self._x_unit*2, 0))
 
 		if drinks:
@@ -167,14 +187,6 @@ class Gui(object):
 						drink_surf = self._font.render(drink[0], True, self._text_fg_color)
 						price_surf = self._font.render("%.2f" % drink[1], True, self._text_fg_color)
 
-						try:
-							drink_img_surf = pygame.image.load(get_drink(drink[0]))
-						except:
-							try:
-								drink_img_surf = pygame.image.load(NODRINK_PATH)
-							except:
-								self.logger.critical("Could not load default image")
-								sys.exit()
 					else:
 						drink_surf = self._font.render(drink[0], True, self._text_bg_color)
 						price_surf = self._font.render("%.2f" % drink[1], True, self._text_bg_color)
@@ -185,8 +197,7 @@ class Gui(object):
 				self._main_surface.blit(drink_surf, (8*self._x_unit-drink_surf.get_width() - self._x_unit*0.1, (7*(self._res_y/8))-((i+1)*drink_height)))
 				self._main_surface.blit(price_surf, (self._res_x-price_surf.get_width(), (7*(self._res_y/8))-((i+1)*drink_height)))
 
-			drink_img_surf = self._aspect_scale(drink_img_surf, (self._x_unit*1.9, self._x_unit*1.9))
-			self._main_surface.blit(drink_img_surf, (self._x_unit*0.2, 14*self._y_unit*0.95 - drink_img_surf.get_height()))
+			self._main_surface.blit(self._drink_img_surf, (self._x_unit*0.2, 14*self._y_unit*0.95 - self._drink_img_surf.get_height()))
 
 		total_surf = self._font.render("Summe:", True, self._text_fg_color)
 		total_surf = self._aspect_scale(total_surf, (3*self._x_unit, 2*self._y_unit))

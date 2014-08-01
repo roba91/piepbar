@@ -36,6 +36,9 @@ class ProductList():
 	def get_price(self, obj_id):
 		return self.data[obj_id][1]
 
+	def get_url(self, obj_id):
+		return self.data[obj_id][2]
+
 	def contains(self, obj):
 		return obj in self.data
 

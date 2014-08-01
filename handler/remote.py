@@ -27,6 +27,15 @@ def get_products():
 		logger.error("fetching failed; %s: %s" % (type(e).__name__, e))
 		return {}
 
+def get_user(user):
+	logger = logging.getLogger("remote:get_user")
+	try:
+		r = requests.get(URL_USER + '/' + user + '.json', auth=(AUTH_USER, AUTH_PASSWORD))
+		logger.info("successfully read json data")
+		return r.json()
+	except Exception, e:
+		logger.error("fetching failed; %s: %s" % (type(e).__name__, e))
+		return {}
 
 def buy(user, *products):
 	"""

@@ -7,10 +7,11 @@ import threading
 import logging
 from product_list import PRODUCT_LIST
 from config import *
-from remote import buy
+from remote import buy, get_user
 
 products = [] # list: int
 user = None # string
+user_json = None
 timer = None
 _gui = None
 
@@ -106,6 +107,7 @@ def reset():
 	stop_timer()
 	products = []
 	user = []
+	user_json = None
 	_gui.idle()
 	PRODUCT_LIST.idle.set()
 
@@ -123,18 +125,26 @@ def stop_timer():
 		timer.cancel()
 
 def update_display():
+	global user_json
+
 	logger = logging.getLogger("actions:update_display")
 	logger.info("updating with...")
 	drinks = [(PRODUCT_LIST.get_name(pid), PRODUCT_LIST.get_price(pid)) for pid in products]
 	logger.info("...drinks: %s" % str(drinks))
 	total = sum([PRODUCT_LIST.get_price(pid) for pid in products])
 	logger.info("...total: %.2f" % total)
-	_gui.update(user, drinks, total)
+
+	if user_json:
+		_gui.update(user, drinks, total, (float(user_json['running_debts']), float(user_json['debts'])))
+	else:
+		_gui.update(user, drinks, total)
+
 
 def user_code(scanned_user):
 	logger = logging.getLogger("actions:user_code")
 	# if the user is allowed to buy things is checked by the intranet
 	global user
+	global user_json
 	stop_timer()
 	PRODUCT_LIST.idle.clear()
 	logger.info("scanned user: %s" % scanned_user)
@@ -143,6 +153,9 @@ def user_code(scanned_user):
 		_gui.message(**MSG_FUNC_USER_CHANGE(scanned_user))
 	user = scanned_user
 	start_timer()
+	user_json = get_user(user)
+	if user_json:
+		_gui.set_user_avatar('http://www.gravatar.com/avatar/' + user_json['email_md5'] + '?s=100&d=retro')
 	update_display()
 
 def product_code(product_id):
@@ -163,6 +176,7 @@ def product_code(product_id):
 	else:
 		products.append(product_id)
 		logger.info("product accepted, new list: %s" % str(products))
+		_gui.set_drink_image(PRODUCT_LIST.get_url(product_id))
 		start_timer()
 		update_display()
 
