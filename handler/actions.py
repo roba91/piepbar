@@ -137,7 +137,7 @@ def update_display():
 	if user_json:
 		_gui.update(user, drinks, total, (float(user_json['running_debts']), float(user_json['debts'])))
 	else:
-		_gui.update(user, drinks, total)
+		_gui.update(user, drinks, total, 0.0, 0.0)
 
 
 def user_code(scanned_user):
