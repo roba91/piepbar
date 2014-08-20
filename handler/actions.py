@@ -103,7 +103,7 @@ def timeout():
 def reset():
 	logger = logging.getLogger("actions:reset")
 	logger.info("resetting $stuff")
-	global user, products
+	global user_json, user, products
 	stop_timer()
 	products = []
 	user = []
@@ -134,10 +134,10 @@ def update_display():
 	total = sum([PRODUCT_LIST.get_price(pid) for pid in products])
 	logger.info("...total: %.2f" % total)
 
-	if user_json:
+	if user_json != None:
 		_gui.update(user, drinks, total, (float(user_json['running_debts']), float(user_json['debts'])))
 	else:
-		_gui.update(user, drinks, total, 0.0, 0.0)
+		_gui.update(user, drinks, total)
 
 
 def user_code(scanned_user):
