@@ -145,7 +145,7 @@ def update_display():
     total = sum([PRODUCT_LIST.get_price(pid) for pid in products])
     logger.info("...total: %.2f" % total)
 
-    if user_json is not None:
+    if user_json:
         _gui.update(user, drinks, total, (
             float(user_json['running_debts']), float(user_json['debts'])))
     else:
