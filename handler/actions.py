@@ -167,9 +167,13 @@ def user_code(scanned_user):
     start_timer()
     user_json = get_user(user)
     if user_json:
-        _gui.set_user_avatar('http://www.gravatar.com/avatar/' + user_json[
-            'email_md5'] + '?s=100&d=retro')
-        update_display()
+        if not user_json.get('blocked_for_beverages?', False):
+            _gui.set_user_avatar('http://www.gravatar.com/avatar/' + user_json[
+                'email_md5'] + '?s=100&d=retro')
+            update_display()
+        else:
+            _gui.message(**MSG_USER_BLOCKED)
+            reset()
     else:
         _gui.message(**MSG_UNKNOWN_USER)
         reset()

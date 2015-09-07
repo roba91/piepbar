@@ -63,6 +63,8 @@ MSG_FUNC_USER_CHANGE = lambda name: {'heading': 'Oh hi %s' % name,
                                      'text': "Didn't know it\n was you."}
 MSG_UNKNOWN_USER = {'heading': 'Wer?',
                     'text': 'Dich kenn ich nich!'}
+MSG_USER_BLOCKED = {'heading': 'Halt stopp!',
+                    'text': 'Du bist gesperrt!\nZahle zuerst deine Schulden.'}
 MSG_UNKNOWN_PRODUCT = {'heading': 'Da fuq?',
                        'text': 'Was scannst du hier?\nAlter...'}
 MSG_SYNC_ON = {'heading': 'Syncing...',
