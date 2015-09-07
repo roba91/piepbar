@@ -61,6 +61,8 @@ MSG_ACCEPT_NO_PRODUCTS = {'heading': 'Stop! Fehler!',
                           'text': 'Nichts gekauft?\nGlaub ich nicht...'}
 MSG_FUNC_USER_CHANGE = lambda name: {'heading': 'Oh hi %s' % name,
                                      'text': "Didn't know it\n was you."}
+MSG_UNKNOWN_USER = {'heading': 'Wer?',
+                    'text': 'Dich kenn ich nich!'}
 MSG_UNKNOWN_PRODUCT = {'heading': 'Da fuq?',
                        'text': 'Was scannst du hier?\nAlter...'}
 MSG_SYNC_ON = {'heading': 'Syncing...',
