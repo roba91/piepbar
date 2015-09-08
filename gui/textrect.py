@@ -1,15 +1,12 @@
 #! /usr/bin/env python
 
 class TextRectException:
-    def __init__(self, message=None):
+    def __init__(self, message = None):
         self.message = message
-
     def __str__(self):
         return self.message
 
-
-def render_textrect(string, font, rect, text_color, background_color,
-                    justification=0):
+def render_textrect(string, font, rect, text_color, background_color, justification=0):
     """Returns a surface containing the passed text string, reformatted
     to fit within the given rect, word-wrapping as necessary. The text
     will be anti-aliased.
@@ -77,14 +74,11 @@ def render_textrect(string, font, rect, text_color, background_color,
             if justification == 0:
                 surface.blit(tempsurface, (0, accumulated_height))
             elif justification == 1:
-                surface.blit(tempsurface, (
-                (rect.width - tempsurface.get_width()) / 2, accumulated_height))
+                surface.blit(tempsurface, ((rect.width - tempsurface.get_width()) / 2, accumulated_height))
             elif justification == 2:
-                surface.blit(tempsurface, (
-                rect.width - tempsurface.get_width(), accumulated_height))
+                surface.blit(tempsurface, (rect.width - tempsurface.get_width(), accumulated_height))
             else:
-                raise TextRectException, "Invalid justification argument: " + str(
-                    justification)
+                raise TextRectException, "Invalid justification argument: " + str(justification)
         accumulated_height += font.size(line)[1]
 
     return surface
@@ -105,8 +99,7 @@ if __name__ == '__main__':
 
     my_rect = pygame.Rect((40, 40, 300, 300))
 
-    rendered_text = render_textrect(my_string, my_font, my_rect,
-                                    (216, 216, 216), (48, 48, 48), 0)
+    rendered_text = render_textrect(my_string, my_font, my_rect, (216, 216, 216), (48, 48, 48), 0)
 
     if rendered_text:
         display.blit(rendered_text, my_rect.topleft)
@@ -115,3 +108,6 @@ if __name__ == '__main__':
 
     while not pygame.event.wait().type in (QUIT, KEYDOWN):
         pass
+
+
+

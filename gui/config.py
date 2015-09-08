@@ -10,33 +10,28 @@ import random
 ############################## display settings ###############################
 files = []
 
-
 def get_data_path(file_name):
-    return join(dirname(__file__), 'data', file_name)
-
+	return join(dirname(__file__), 'data', file_name)
 
 def get_avatar(user):
-    return join(dirname(__file__), 'data/avatars', user + '.png')
-
+	return join(dirname(__file__), 'data/avatars', user+'.png')
 
 def get_drink(name):
-    return join(dirname(__file__), 'data/drinks', name + '.png')
-
+	return join(dirname(__file__), 'data/drinks', name+'.png')
 
 def get_random_movie():
-    global files
-    if not files:
-        files = [k for k in listdir(join(dirname(__file__), 'data/movies')) if
-                 k.endswith('.mpg')]
-        random.shuffle(files)
-    return join(dirname(__file__), 'data/movies', files.pop())
-
+	global files
+	if not files:
+		files = [k for k in listdir(join(dirname(__file__), 'data/movies')) if k.endswith('.mpg')]
+		random.shuffle(files)
+	return join(dirname(__file__), 'data/movies', files.pop())
 
 IDLE_PATH = get_data_path('idle_bg.png')
 MAIN_PATH = get_data_path('main_bg.png')
 MESSAGE_PATH = get_data_path('message.png')
 NOAVATAR_PATH = get_avatar('default')
 NODRINK_PATH = get_drink('default')
+
 
 ''' Reencode videos with: ffmpeg -i <infile> -vf scale=480:272 -vcodec mpeg1video -acodec libmp3lame -intra <outfile.mpg>'''
 IDLE_VIDEO_TIMEOUT = 30
