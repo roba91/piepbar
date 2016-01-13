@@ -35,8 +35,8 @@ def encode_buy(products):
 	return Counter(products)
 
 def decode_product_list(json_data):
-	# convert json_data to {data: (name, price)} dict
-	return {int(e['id']): (e['name'], float(e['price']), URL_BASE + e['image_url']) for e in json_data}
+	# convert json_data to {data: (name, price, image_url)} dict
+	return {int(e['id']): (e['name'], float(e['price']), URL_BASE + e['image_urls']['small']) for e in json_data}
 
 
 ############################# logging settings #############################
